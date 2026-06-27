@@ -1,5 +1,7 @@
 # MenuTitle: Open All Drawn Glyphs
 
+# Opens a tab with all glyphs that contain drawn paths
+
 from GlyphsApp import Glyphs
 
 font = Glyphs.font

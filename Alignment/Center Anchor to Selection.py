@@ -1,6 +1,5 @@
 # MenuTitle: Center Anchor to Selection
-# Center selected anchor between selected nodes and components
-# Compatible with current Glyphs versions
+# Centers selected anchor between selected nodes or components
 
 from GlyphsApp import Glyphs, GSAnchor, GSNode, GSComponent
 

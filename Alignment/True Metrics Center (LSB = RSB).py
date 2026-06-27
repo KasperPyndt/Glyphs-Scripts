@@ -1,6 +1,5 @@
 # MenuTitle: True Metric Center (LSB = RSB)
-# Makes left and right sidebearings equal
-# Works reliably for italic uppercase
+# Makes left and right sidebearings equal without changing the glyphs total width
 
 from GlyphsApp import Glyphs
 from Foundation import NSPoint

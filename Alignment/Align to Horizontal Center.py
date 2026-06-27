@@ -1,5 +1,5 @@
 # MenuTitle: Align to Horizontal Center
-# Aligns selected anchors, components, and outlines to the italic canvas center axis
+# Aligns selected anchors, components, and outlines to the canvas horizontal center axis
 
 from GlyphsApp import Glyphs
 from Foundation import NSPoint

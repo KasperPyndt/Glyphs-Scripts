@@ -1,4 +1,6 @@
 # MenuTitle: Check Vertical Disalignments
+# Checks the selected masters for glyphs whose nodes are placed almost, but not exactly, at the vertical metric lines and at the edge of overshoots
+
 # -*- coding: utf-8 -*-
 
 from GlyphsApp import Glyphs, OFFCURVE, Message

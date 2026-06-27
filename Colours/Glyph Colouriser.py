@@ -1,4 +1,6 @@
-#MenuTitle: Glyph Colouriser
+# MenuTitle: Glyph Colouriser
+# Allows the user to assign colours to four groups: Component glyphs, non-component glyphs, mixed glyphs and non-exporting glyphs.
+
 # -*- coding: utf-8 -*-
 
 __doc__ = """

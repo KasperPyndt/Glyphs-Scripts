@@ -1,4 +1,6 @@
 # MenuTitle: Align to Vertical Center of Hyphen 
+# Aligns selected shapes to the vertical center of hyphen. Especially useful for aligning math-symbols to the hyphen.
+
 # -*- coding: utf-8 -*-
 
 def alignHyphen():
