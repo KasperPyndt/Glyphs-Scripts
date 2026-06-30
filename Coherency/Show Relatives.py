@@ -1,6 +1,7 @@
 # MenuTitle: Show Possible Relatives
 # Shows all potential relatives (conventionally) to selected glyph, and adds the option to generate a few sample words in English with said glyphs.
 
+
 # -*- coding: utf-8 -*-
 
 from GlyphsApp import Glyphs
@@ -238,25 +239,29 @@ def glyph_line(glyph_names):
 	return "".join(glyph_token(name) for name in glyph_names)
 
 
+def glyph_exists(font, glyph_name):
+	return glyph_name in font.glyphs
+
+
 def relatives_for_glyph(font, selected_name):
 	base_name, suffix = split_suffix(selected_name)
 
 	if base_name not in RELATIVES:
-		if selected_name in font.glyphs:
+		if glyph_exists(font, selected_name):
 			return [selected_name]
 		return []
 
 	output = []
 
-	if selected_name in font.glyphs:
+	if glyph_exists(font, selected_name):
 		output.append(selected_name)
 
 	for relative_base in RELATIVES[base_name]:
 		suffixed_name = relative_base + suffix
 
-		if suffix and suffixed_name in font.glyphs:
+		if suffix and glyph_exists(font, suffixed_name):
 			output.append(suffixed_name)
-		elif relative_base in font.glyphs:
+		elif glyph_exists(font, relative_base):
 			output.append(relative_base)
 
 	return unique_preserve_order(output)
@@ -282,6 +287,23 @@ def selected_plus_relatives_text(font, selected_name):
 		return None, []
 
 	return selected_glyph_line(selected_name) + "\n\n" + relatives_text, names
+
+
+def all_relatives_groups_text(font):
+	group_lines = []
+
+	for base_name in RELATIVES.keys():
+		if not glyph_exists(font, base_name):
+			continue
+
+		group_names = relatives_for_glyph(font, base_name)
+
+		if len(group_names) < 2:
+			continue
+
+		group_lines.append(glyph_line(group_names))
+
+	return "\n\n".join(group_lines)
 
 
 def simple_letters_from_glyph_names(glyph_names):
@@ -412,7 +434,12 @@ def sample_words_for_glyph(font, selected_name, count=15):
 		remaining_candidates.remove(best_word)
 
 	# If the word bank could not cover every letter, report it in the macro window.
-	missing_letters = related_set.difference(set().union(*[word_letters(word) for word in selected_words]))
+	if selected_words:
+		represented_letters = set().union(*[word_letters(word) for word in selected_words])
+	else:
+		represented_letters = set()
+
+	missing_letters = related_set.difference(represented_letters)
 
 	if missing_letters:
 		print("Warning: Could not represent these relatives in the sample words: %s" % ", ".join(sorted(missing_letters)))
@@ -482,6 +509,23 @@ def generate_sample_string(sender=None):
 	print(sample_text)
 
 
+def open_all_groups_of_relatives(sender=None):
+	font = current_font()
+
+	if not font:
+		return
+
+	tab_text = all_relatives_groups_text(font)
+
+	if not tab_text:
+		beep("No relative groups found in this font.")
+		return
+
+	font.newTab(tab_text)
+
+	print("Opened all groups of relatives.")
+
+
 # ------------------------
 # UI
 # ------------------------
@@ -500,27 +544,34 @@ class ShowPossibleRelativesPalette(object):
 		button_height = 24
 
 		window_width = button_width + margin * 2
-		window_height = button_height * 2 + margin * 2 + button_gap
+		window_height = button_height * 3 + margin * 2 + button_gap * 2
 
 		self.w = FloatingWindow(
 			(window_width, window_height),
 			"Relatives",
 			minSize=(window_width, window_height),
 			maxSize=(window_width, window_height),
-			autosaveName="com.yourname.ShowPossibleRelatives.palette.v6"
+			autosaveName="com.yourname.ShowPossibleRelatives.palette.v7"
 		)
 
 		self.w.relativesButton = Button(
 			(margin, margin, -margin, button_height),
-			"Show possible relatives",
+			"Show Relatives for this glyph",
 			callback=show_possible_relatives,
 			sizeStyle="small"
 		)
 
 		self.w.sampleButton = Button(
 			(margin, margin + button_height + button_gap, -margin, button_height),
-			"Generate sample string",
+			"Generate string from this group",
 			callback=generate_sample_string,
+			sizeStyle="small"
+		)
+
+		self.w.allGroupsButton = Button(
+			(margin, margin + (button_height + button_gap) * 2, -margin, button_height),
+			"Open all groups of relatives",
+			callback=open_all_groups_of_relatives,
 			sizeStyle="small"
 		)
 
