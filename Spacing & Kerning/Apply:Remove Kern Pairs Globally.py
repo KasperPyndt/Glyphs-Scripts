@@ -14,16 +14,18 @@ class GlobalKerningPairPanel(object):
 		self.button_height = 32
 		self.button_padding = 18
 
-		self.apply_title = "Apply kern pair to all masters"
-		self.remove_title = "Remove kern pair from all masters"
+		self.apply_title = "🔮 Apply this kern pair to all masters"
+		self.remove_master_title = "🧼 Remove kern pair from this master"
+		self.remove_all_title = "💣 Remove kern pair from all masters"
 
 		self.button_width = self.required_button_width([
 			self.apply_title,
-			self.remove_title,
+			self.remove_all_title,
+			self.remove_master_title,
 		])
 
 		window_width = self.button_width + self.margin * 2
-		window_height = self.button_height * 2 + self.margin * 2 + self.button_gap
+		window_height = self.button_height * 3 + self.margin * 2 + self.button_gap * 2
 
 		self.w = FloatingWindow(
 			(window_width, window_height),
@@ -42,18 +44,31 @@ class GlobalKerningPairPanel(object):
 			callback=self.apply_callback
 		)
 
-		self.w.removeButton = Button(
+		self.w.removeAllButton = Button(
 			(
 				self.margin,
 				self.margin + self.button_height + self.button_gap,
 				self.button_width,
 				self.button_height,
 			),
-			self.remove_title,
-			callback=self.remove_callback
+			self.remove_all_title,
+			callback=self.remove_all_callback
 		)
 
-		self.make_button_blue(self.w.applyButton)
+		self.w.removeMasterButton = Button(
+			(
+				self.margin,
+				self.margin + (self.button_height + self.button_gap) * 2,
+				self.button_width,
+				self.button_height,
+			),
+			self.remove_master_title,
+			callback=self.remove_master_callback
+		)
+
+		self.set_button_color(self.w.applyButton, "BLUE")
+		self.set_button_color(self.w.removeAllButton, "RED")
+		self.set_button_color(self.w.removeMasterButton, "ORANGE")
 
 		self.center_window_in_app()
 		self.w.open()
@@ -77,10 +92,10 @@ class GlobalKerningPairPanel(object):
 		except Exception:
 			return len(text) * 7
 
-	def make_button_blue(self, button):
-		"""Make a vanilla button blue where supported."""
+	def set_button_color(self, button, color_name):
+		"""Set a vanilla button bezel color where supported."""
 		try:
-			button.getNSButton().setBezelColor_(Glyphs.colorObjectToNSColor("BLUE"))
+			button.getNSButton().setBezelColor_(Glyphs.colorObjectToNSColor(color_name))
 		except Exception:
 			pass
 
@@ -212,7 +227,38 @@ class GlobalKerningPairPanel(object):
 		print("Value:     %s" % value)
 		print("Masters:   %s" % ", ".join([master.name for master in font.masters]))
 
-	def remove_callback(self, sender):
+	def remove_master_callback(self, sender):
+		pair_data = self.current_pair_data()
+
+		if not pair_data:
+			return
+
+		font, active_master, left_key, right_key, value = pair_data
+
+		font.disableUpdateInterface()
+
+		try:
+			font.removeKerningForPair(
+				active_master.id,
+				left_key,
+				right_key,
+				direction=LTR
+			)
+
+		finally:
+			font.enableUpdateInterface()
+
+		Glyphs.showNotification(
+			"Kerning removed from this master",
+			"%s / %s in %s" % (left_key, right_key, active_master.name)
+		)
+
+		print("Removed kern pair from this master:")
+		print("Left key:  %s" % left_key)
+		print("Right key: %s" % right_key)
+		print("Master:    %s" % active_master.name)
+
+	def remove_all_callback(self, sender):
 		pair_data = self.current_pair_data()
 
 		if not pair_data:
