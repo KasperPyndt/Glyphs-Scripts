@@ -1,2 +1,2 @@
 # Glyphs Scripts
-Productivity and workflow scripts for Glyphs App. If you have any questions about how to use the scripts, or about what they do, feel free to email me at mail@approxtype.com 📬
+Scripts to make for more efficient workflows in Glyphs App. If you have any questions about the use or function of these, feel free to email me at mail@approxtype.com 📬
