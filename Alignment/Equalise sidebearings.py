@@ -1,4 +1,4 @@
-# MenuTitle: True Metric Center (LSB = RSB)
+# MenuTitle: Equalise sidebearings
 # Makes left and right sidebearings equal without changing the glyphs total width
 
 from GlyphsApp import Glyphs

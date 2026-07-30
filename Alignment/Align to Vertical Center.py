@@ -1,5 +1,5 @@
 # MenuTitle: Align to Vertical Center
-# Aligns selected shapes to the vertical center line between baseline and cap-height
+# Aligns selected shapes to the vertical center between baseline and cap-height
 
 # -*- coding: utf-8 -*-
 
