@@ -362,16 +362,25 @@ class ExportPackageBuilder:
     def _run_task(self, task, report):
         self.log("Exporting %s…" % task.label)
         before = self._folder_snapshot(task.output_folder)
+        export_folder_parameters = self._remove_export_folder_parameters(
+            task.instance
+        )
 
         try:
-            result = task.instance.generate(
-                format=task.outline_format,
-                fontPath=task.output_folder,
-                containers=[task.container],
+            try:
+                result = task.instance.generate(
+                    format=task.outline_format,
+                    fontPath=task.output_folder,
+                    containers=[task.container],
+                )
+                result_errors = self._result_errors(result)
+            except Exception as error:
+                result_errors = [self._error_text(error)]
+        finally:
+            self._restore_custom_parameters(
+                task.instance,
+                export_folder_parameters,
             )
-            result_errors = self._result_errors(result)
-        except Exception as error:
-            result_errors = [self._error_text(error)]
 
         after = self._folder_snapshot(task.output_folder)
         changed_files = self._changed_files(
@@ -411,6 +420,24 @@ class ExportPackageBuilder:
 
         for file_path in changed_files:
             self.log("  %s" % os.path.basename(file_path))
+
+    @staticmethod
+    def _remove_export_folder_parameters(instance):
+        """Temporarily stop Glyphs from adding instance export subfolders."""
+        parameters = instance.customParameters
+        removed = []
+        for index in range(len(parameters) - 1, -1, -1):
+            parameter = parameters[index]
+            if parameter.name == "Export Folder":
+                removed.append((index, parameter))
+                del parameters[index]
+        return removed
+
+    @staticmethod
+    def _restore_custom_parameters(instance, removed_parameters):
+        parameters = instance.customParameters
+        for index, parameter in sorted(removed_parameters):
+            parameters.insert(index, parameter)
 
     def _commit(self, staging_path, package_path, report):
         backup_path = None
