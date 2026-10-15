@@ -3,7 +3,6 @@
 Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing, and producing fonts in [Glyphs 4](https://glyphsapp.com/). This collection brings together small everyday utilities and tools for working across masters, preparing exports, and exploring letterforms.
 
 [Installation](#installation) — [Script catalogue](#script-catalogue) — [Production workflows](#production-workflows) — [Experimental tools](#experimental-tools) — [Contact](#contact)
-
 <br>
 
 ## Installation
@@ -14,8 +13,8 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 4. Hold **Option** and choose **Script → Reload Scripts**. The scripts will appear under **Script** in their corresponding folders.
 
 Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanilla, if needed, from the **Modules** tab in Glyphs’ Plugin Manager. See the official [scripts guide](https://handbook.glyphsapp.com/scripts/) and [extension setup guide](https://glyphsapp.com/learn/extending-glyphs) for details.
-
 <br>
+
 ## Script catalogue
 
 - [Alignment](#alignment)
@@ -32,8 +31,8 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 - [Spacing & Kerning](#spacing--kerning)
 - [Variable Fonts](#variable-fonts)
 - [Experimental tools](#experimental-tools)
-
 <br>
+
 ### Alignment
 
 <table width="100%">
