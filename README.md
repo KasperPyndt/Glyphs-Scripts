@@ -379,8 +379,8 @@ For example, with the family `Example Sans`:
 | Variable Font | `Example-Sans-Variable` |
 | Variable Font Trial | `Example-Sans-Variable-UNLICENSED-TRIAL` |
 
-
-### Build a export package
+<br><br>
+### Build an export package
 
 Use **Export Package Builder** for configurable desktop, web, and variable font file delivery. Choose a destination, select formats, and configure the package and subfolder names. Variable output requires a Variable Font Setting in Font Info’s Exports section; variable WOFF2 is attempted as an optional export.
 
