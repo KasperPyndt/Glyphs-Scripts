@@ -1,9 +1,10 @@
-#MenuTitle: Old Print
+# MenuTitle: Old Print
 # -*- coding: utf-8 -*-
+# Compatibility: Glyphs 3 and 4, Python 3.
 
 """
-Old Print — Clean v1.12
-Glyphs 4
+Old Print — Clean v1.14
+Glyphs 3 and Glyphs 4
 
 True-preview workflow:
 - Slider and effect-checkbox changes are temporary previews when Preview is on.
@@ -593,22 +594,29 @@ class OldPrintController(object):
         self._suppress_callbacks = False
         self.presets = self._load_presets()
 
-        panel_width = 470
-        panel_height = 276
-        margin = 12
-        row_height = 32
+        # Vanilla expands rounded NSButton frames beyond their logical bounds.
+        # Leave room for those native bezels, including on newer macOS versions.
+        margin = 14
+        row_height = 29
+        button_height = 20
+        button_gap = 14
+        preset_button_width = 64
+        preset_y = margin + 3 * row_height + 32 + 28 + 40
+        button_y = preset_y + 44
+        panel_width = 480
+        panel_height = button_y + button_height + margin
 
         self.w = vanilla.FloatingWindow(
             (panel_width, panel_height),
-            "Old Print — Clean v1.12",
+            "Old Print — Clean v1.14",
             minSize=(panel_width, panel_height),
-            maxSize=(620, panel_height),
+            maxSize=(680, panel_height),
         )
 
         label_x = margin
         slider_x = 154
-        slider_width = -58
-        value_x = -46
+        slider_width = -62
+        value_x = -50
         y = margin
 
         # 1. Corner radius
@@ -624,7 +632,7 @@ class OldPrintController(object):
             callback=self.slider_changed,
         )
         self.w.cornerValue = vanilla.TextBox(
-            (value_x, y + 2, 34, 20),
+            (value_x, y + 2, 36, 20),
             "0",
         )
         y += row_height
@@ -642,7 +650,7 @@ class OldPrintController(object):
             callback=self.slider_changed,
         )
         self.w.wonkValue = vanilla.TextBox(
-            (value_x, y + 2, 34, 20),
+            (value_x, y + 2, 36, 20),
             "0.0",
         )
         y += row_height
@@ -660,7 +668,7 @@ class OldPrintController(object):
             callback=self.slider_changed,
         )
         self.w.detailValue = vanilla.TextBox(
-            (value_x, y + 2, 34, 20),
+            (value_x, y + 2, 36, 20),
             "0",
         )
         y += row_height
@@ -678,90 +686,91 @@ class OldPrintController(object):
             callback=self.slider_changed,
         )
         self.w.unevenValue = vanilla.TextBox(
-            (value_x, y + 2, 34, 20),
+            (value_x, y + 2, 36, 20),
             "0.0",
         )
-        y += 28
+        y += 32
 
-        # Compact, even 21pt rhythm for the three checkbox rows.
+        # Separate smoothing, selection/preview, presets, and final actions.
         self.w.smoothen = vanilla.CheckBox(
-            (margin, y, -margin, 20),
+            (margin, y, 164, 20),
             "Smoothen shape",
             value=False,
             callback=self.smoothing_changed,
         )
-        y += 21
 
         self.w.partialSmoothen = vanilla.CheckBox(
-            (margin, y, -margin, 20),
+            (190, y, -margin, 20),
             "Partially smoothen shape",
             value=False,
             callback=self.smoothing_changed,
         )
-        y += 21
+        y += 28
 
         self.w.allSelected = vanilla.CheckBox(
-            (margin, y, 244, 20),
+            (margin, y, 260, 20),
             "Apply to all selected layers",
             value=True,
             callback=self.option_changed,
         )
         self.w.previewToggle = vanilla.CheckBox(
-            (286, y, -margin, 20),
+            (-106, y, 92, 20),
             "Preview",
             value=True,
             callback=self.preview_toggle_changed,
         )
-        y += 24
+        self.w.presetDivider = vanilla.HorizontalLine(
+            (margin, preset_y - 16, -margin, 1),
+        )
 
-        # Preset name/list + explicit Save and Apply actions.
+        # The field grows with the window; buttons stay aligned to the right.
+        preset_actions_width = 3 * (preset_button_width + button_gap)
         self.w.presetLabel = vanilla.TextBox(
-            (margin, y + 3, 46, 20),
+            (margin, preset_y + 1, 44, 20),
             "Preset",
         )
         self.w.presetName = vanilla.ComboBox(
-            (60, y, 190, 22),
+            (66, preset_y - 1, -(margin + preset_actions_width), 21),
             self._preset_names(),
             completes=True,
             continuous=False,
-            sizeStyle="small",
         )
         self.w.presetName.set("None")
 
         self.w.savePreset = vanilla.Button(
-            (256, y, 60, 22),
+            (-(margin + 3 * preset_button_width + 2 * button_gap),
+             preset_y, preset_button_width, button_height),
             "Save",
             callback=self.save_preset_callback,
-            sizeStyle="small",
         )
         self.w.deletePreset = vanilla.Button(
-            (322, y, 64, 22),
+            (-(margin + 2 * preset_button_width + button_gap),
+             preset_y, preset_button_width, button_height),
             "Delete",
             callback=self.delete_preset_callback,
-            sizeStyle="small",
         )
         self.w.applyPreset = vanilla.Button(
-            (392, y, -margin, 22),
+            (-(margin + preset_button_width),
+             preset_y, preset_button_width, button_height),
             "Apply",
             callback=self.apply_preset_callback,
-            sizeStyle="small",
         )
 
-        button_height = 26
-        button_y = panel_height - margin - button_height
-
+        self.w.actionDivider = vanilla.HorizontalLine(
+            (margin, button_y - 12, -margin, 1),
+        )
         self.w.restore = vanilla.Button(
-            (margin, button_y, 88, button_height),
+            (margin, button_y, 84, button_height),
             "Restore",
             callback=self.restore_callback,
         )
         self.w.variationButton = vanilla.Button(
-            (106, button_y, 126, button_height),
+            (margin + 84 + button_gap, button_y, 124, button_height),
             "New Variation",
             callback=self.new_variation_callback,
         )
         self.w.commitButton = vanilla.Button(
-            (238, button_y, -margin, button_height),
+            (-110, button_y, 96, button_height),
             "Confirm",
             callback=self.commit_callback,
         )
