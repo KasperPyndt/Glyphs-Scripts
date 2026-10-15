@@ -164,19 +164,6 @@ When several variable exports share a retail or trial category, their style name
 
 Use **Export Package Builder** for configurable desktop, web, and variable delivery. Choose a destination, select formats, and configure the package and subfolder names. Variable output requires a Variable Font Setting in Font Info’s Exports section; variable WOFF2 is attempted as an optional export.
 
-Use **Approximate Type Package Builder** for static deliveries containing complete-family and individual-style folders, each with a ZIP archive. It uses lowercase folder names, joins family-name words, hyphenates style-name words, and omits a leading `AT` family prefix. Exported font filenames are preserved.
-
-Both builders have replacement options. The general builder can replace its named package; the Approximate Type builder can replace the destination’s `desktop` and `web` folders.
-
-## Experimental tools
-
-These scripts live in **In Progress**. Their behaviour and interfaces are still being developed; use a working copy of the font when trying them.
-
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Build Rough Draft](./In%20Progress/Build%20Rough%20Draft.py) | Builds rough Latin letterforms from a progressively unlocked source set, starting with glyphs such as `H`, `O`, and `h`. More letters become available as their source glyphs are drawn or generated. The panel can also clear generated targets. | Chosen target glyphs, in the current master or all masters; creates or replaces outlines. |
-| [Optical Glyph Scaler](./In%20Progress/Optical%20Glyph%20Scaler.py) | Adjusts a glyph’s proportions with stroke-weight compensation and an overlay preview. Recalculates from a captured source rather than accumulating transformations; Apply commits the result. Requires unhinted outlines without components. | One glyph’s current master layer. |
-
 ## Credits
 
 The Symmetrify tools are adapted from **Tim Ahrens / Just Another Foundry’s** [freemix-glyphsapp](https://github.com/justanotherfoundry/freemix-glyphsapp). Their source headers retain the original attribution and identify the upstream project as GPL-2.0 licensed.
