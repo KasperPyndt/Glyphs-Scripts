@@ -1,5 +1,6 @@
 # MenuTitle: Apply/Remove Kern Pairs Globally
 # -*- coding: utf-8 -*-
+# Compatibility: Glyphs 3 and 4, Python 3.
 
 from GlyphsApp import Glyphs, GSLTR
 from vanilla import FloatingWindow, Button
@@ -9,10 +10,11 @@ from vanilla.dialogs import message
 class GlobalKerningPairPanel(object):
 
 	def __init__(self):
-		self.margin = 6
-		self.button_gap = self.margin / 2
+		# Rounded native button frames extend beyond Vanilla's logical bounds.
+		self.margin = 20
+		self.button_gap = 8
 		self.button_height = 32
-		self.button_padding = 18
+		self.button_padding = 32
 
 		self.apply_title = "🔮 Apply this kern pair to all masters"
 		self.remove_master_title = "🧼 Remove kern pair from this master"
@@ -34,7 +36,8 @@ class GlobalKerningPairPanel(object):
 		self.w = FloatingWindow(
 			(window_width, window_height),
 			"Apply/remove kern pairs globally",
-			autosaveName="com.yourname.GlobalKerningPairPanel"
+			# Use a fresh frame key so the old cramped size is not restored.
+			autosaveName="com.yourname.GlobalKerningPairPanel.layout.v3"
 		)
 
 		self.w.applyButton = Button(

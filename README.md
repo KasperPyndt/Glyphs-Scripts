@@ -322,7 +322,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 </thead>
 <tbody>
 <tr>
-<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Apply%3ARemove%20Kern%20Pairs%20Globally.py">Apply/Remove Kern Pairs<br>Globally</a></td>
+<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Apply%3ARemove%20Kern%20Pairs%20Globally.py">Apply and Remove Kern Pairs<br>Globally</a></td>
 <td valign="top">Copies the active master’s current pair value to all masters, or removes the pair from the current master or all masters.</td>
 <td valign="top">Current left-to-right pair; may affect kerning groups.</td>
 </tr>
