@@ -47,17 +47,17 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 <tbody>
 <tr>
 <td valign="top" nowrap><a href="./Alignment/Align%20to%20Horizontal%20Center.py">Align to Horizontal Center</a></td>
-<td valign="top">Centers selected nodes, paths, components, or anchors within the existing width, accounting for italics. With no internal selection, centers the whole foreground.</td>
+<td valign="top">Centers selected nodes, paths, components, or anchors within the existing width, accounting for italics. With no selection, centers all paths.</td>
 <td valign="top">Selected layers.</td>
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Alignment/Align%20to%20Horizontal%20Center%20-%20All%20Masters.py">Align to Horizontal Center,<br>all masters</a></td>
-<td valign="top">Centers each master’s whole foreground within its existing width, accounting for italics. Ignores internal selections.</td>
+<td valign="top">Centers each master’s drawn paths within its existing width, accounting for italics. Ignores selections.</td>
 <td valign="top">All masters of selected glyphs.</td>
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Alignment/Align%20to%20Vertical%20Center.py">Align to Vertical Center</a></td>
-<td valign="top">Centers selected geometry between baseline and cap height. With no internal selection, moves the whole layer.</td>
+<td valign="top">Centers selected geometry between baseline and cap height. With no selection, moves the whole layer.</td>
 <td valign="top">Selected layers.</td>
 </tr>
 <tr>
@@ -77,7 +77,7 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Alignment/Equalise%20sidebearings.py">Equalise sidebearings</a></td>
-<td valign="top">Equalises left and right sidebearings by shifting the foreground; preserves advance width.</td>
+<td valign="top">Equalises left and right sidebearings by shifting the drawn shapes; preserves advance width.</td>
 <td valign="top">Selected layers.</td>
 </tr>
 </tbody>
@@ -154,7 +154,7 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 <tr>
 <td valign="top" nowrap><a href="./Components/Disable%20Automatic%20Alignment%20for%20Components.py">Disable Auto Alignment<br>for Components<br>in Selected Glyphs</a></td>
 <td valign="top">Disables component auto-alignment for manual positioning.</td>
-<td valign="top">All layers of selected glyphs.</td>
+<td valign="top">All masters of selected glyphs.</td>
 </tr>
 </tbody>
 </table>
@@ -172,7 +172,7 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 <tbody>
 <tr>
 <td valign="top" nowrap><a href="./Copy%20Paste/Copy%20Word%20as%20Vectors.py">Copy Word as Vectors</a></td>
-<td valign="top">Copies displayed text as editable Illustrator/InDesign vectors, preserving placement. Text-tool selection limits the copy; otherwise copies the whole tab. Requires an editable master.</td>
+<td valign="top">Copies displayed text as editable Illustrator/InDesign vectors, preserving placement. Text-tool selection defines the copy; otherwise copies the whole tab.</td>
 <td valign="top">Clipboard only; leaves the font unchanged.</td>
 </tr>
 </tbody>
@@ -193,11 +193,6 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 <td valign="top" nowrap><a href="./Diacritics/Show%20Glyphs%20Using%20Selected%20Diacritic.py">Show Glyphs Using<br>Selected Diacritic</a></td>
 <td valign="top">Opens glyphs that directly use the first selected glyph as a component in any master. Works with any component source.</td>
 <td valign="top">Searches all glyphs’ master layers; leaves outlines unchanged.</td>
-</tr>
-<tr>
-<td valign="top" nowrap><a href="./Diacritics/Show%20All%20Glyphs%20Without%20Kern%20Groups.py">Show All Glyphs Missing<br>Kerning Groups</a></td>
-<td valign="top">Opens glyphs missing either kerning group, including non-exporting glyphs.</td>
-<td valign="top">Whole font; displays the current master.</td>
 </tr>
 </tbody>
 </table>
@@ -230,18 +225,8 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Drawing/Old%20Print.py">Old Print</a></td>
-<td valign="top">Simulates irregular print with rounding, wonkiness, detail, unevenness, and optional smoothing. Includes presets; Confirm commits the preview, closing discards it.</td>
-<td valign="top">Selected layers, or the first selected layer; Font View selection uses the current master.</td>
-</tr>
-<tr>
-<td valign="top" nowrap><a href="./Drawing/Symmetrify%20KP.py">Symmetrify KP</a></td>
-<td valign="top">Applies reflection or rotational symmetry, including fivefold when possible. Select at least two nodes on a path to limit its edits; otherwise uses complete paths.</td>
-<td valign="top">First selected layer.</td>
-</tr>
-<tr>
-<td valign="top" nowrap><a href="./Drawing/Symmetrify%20Selected%20Nodes%20in%20All%20Masters%20KP.py">Symmetrify Selected Nodes<br>in All Masters KP</a></td>
-<td valign="top">Applies symmetry to corresponding selected nodes. Requires at least two on one path and matching paths and nodes across masters.</td>
-<td valign="top">All masters of the active glyph.</td>
+<td valign="top">Simulates irregular print with rounding, wonkiness, detail, unevenness, and optional smoothing.</td>
+<td valign="top">Selected layers.</td>
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Drawing/Unround%20Corner.py">Unround Corner</a></td>
@@ -265,12 +250,12 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 <tr>
 <td valign="top" nowrap><a href="./Production/Export%20Package%20Builder.py">Export Package Builder</a></td>
 <td valign="top">Builds configurable Desktop, Web, and Variable folders with OTF/TTF, WOFF/WOFF2, and variable TTF/WOFF2 output.</td>
-<td valign="top">Export instances; active instances by default. Writes files to a chosen destination.</td>
+<td valign="top">Export instances; active instances by default.</td>
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Production/Set%20Export%20Names%20Based%20on%20Family%20Name.py">Set Export Names<br>Based on Family Name</a></td>
 <td valign="top">Generates family, full, PostScript, file, folder, and variable-prefix names from the family name. Handles trials, duplicates, and name-length limits.</td>
-<td valign="top">All export instances, including inactive ones; updates naming settings without exporting or saving.</td>
+<td valign="top">All export instances, including inactive ones; updates naming settings.</td>
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Production/Set%20Family%20Alignment.py">Set Family Alignment</a></td>
@@ -346,7 +331,7 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 </tr>
 <tr>
 <td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Copy%20Kerning%20from%20Source%20Pair.py">Copy Kerning<br>From Source Pair</a></td>
-<td valign="top">Copies a typed source pair’s kerning to the current Edit View pair, with an optional adjustment. Uses target groups when available, otherwise glyph-level keys.</td>
+<td valign="top">Copies a typed source pair’s kerning to the current Edit View pair, with an optional adjustment. Doesn't apply the source pairs kern groups, only applies values.</td>
 <td valign="top">Current master or all masters; all masters enabled by default.</td>
 </tr>
 <tr>
