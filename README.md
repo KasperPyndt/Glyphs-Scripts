@@ -366,7 +366,7 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 </tbody>
 </table>
 
-## Production workflows
+# Production workflows
 
 ### Generate names from one family name
 
