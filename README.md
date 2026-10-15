@@ -27,7 +27,6 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 - [Copy Paste](#copy-paste)
 - [Diacritics](#diacritics)
 - [Drawing](#drawing)
-- [Layers](#layers)
 - [Production](#production)
 - [Proofing](#proofing)
 - [Show](#show)
@@ -37,108 +36,350 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 
 ### Alignment
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Align to Horizontal Center](./Alignment/Align%20to%20Horizontal%20Center.py) | Centers selected nodes, paths, components, or anchors within the glyph width. With no internal selection, centers the whole foreground. Preserves width and accounts for italic slant. | Selected layers. |
-| [Align to Horizontal Center, all masters](./Alignment/Align%20to%20Horizontal%20Center%20-%20All%20Masters.py) | Centers each master’s complete foreground within its existing glyph width, accounting for italic slant. Ignores internal node selections. | All masters of selected glyphs. |
-| [Align to Vertical Center](./Alignment/Align%20to%20Vertical%20Center.py) | Centers selected geometry halfway between the baseline and cap height. With no internal selection, moves the whole layer. | Selected layers. |
-| [Align to Vertical Center, all masters](./Alignment/Align%20to%20Vertical%20Center%20-%20All%20Masters.py) | Centers the complete foreground between each master’s baseline and cap height. | All masters of selected glyphs. |
-| [Align to Vertical Center of Hyphen](./Alignment/Align%20to%20Vertical%20Center%20of%20Hyphen.py) | Aligns the vertical center of each selected layer to the hyphen in its associated master. Useful for punctuation and mathematical symbols. | Selected layers; requires a drawn `hyphen`. |
-| [Center Anchor to Selection](./Alignment/Center%20Anchor%20to%20Selection.py) | Moves one selected anchor to the center of the bounding box defined by selected nodes or components. Select at least two nodes or one component together with the anchor. | First selected layer. |
-| [Equalise sidebearings](./Alignment/Equalise%20sidebearings.py) | Makes left and right sidebearings equal by shifting the foreground, while keeping the advance width unchanged. | Selected layers. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Alignment/Align%20to%20Horizontal%20Center.py">Align to Horizontal Center</a></td>
+<td valign="top">Centers selected nodes, paths, components, or anchors within the existing width, accounting for italics. With no internal selection, centers the whole foreground.</td>
+<td valign="top">Selected layers.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Alignment/Align%20to%20Horizontal%20Center%20-%20All%20Masters.py">Align to Horizontal Center,<br>all masters</a></td>
+<td valign="top">Centers each master’s whole foreground within its existing width, accounting for italics. Ignores internal selections.</td>
+<td valign="top">All masters of selected glyphs.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Alignment/Align%20to%20Vertical%20Center.py">Align to Vertical Center</a></td>
+<td valign="top">Centers selected geometry between baseline and cap height. With no internal selection, moves the whole layer.</td>
+<td valign="top">Selected layers.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Alignment/Align%20to%20Vertical%20Center%20-%20All%20Masters.py">Align to Vertical Center,<br>all masters</a></td>
+<td valign="top">Centers each master’s whole foreground between baseline and cap height.</td>
+<td valign="top">All masters of selected glyphs.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Alignment/Align%20to%20Vertical%20Center%20of%20Hyphen.py">Align to Vertical Center<br>of Hyphen</a></td>
+<td valign="top">Matches each selected layer’s vertical center to the hyphen in the same master.</td>
+<td valign="top">Selected layers; requires a drawn <code>hyphen</code>.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Alignment/Center%20Anchor%20to%20Selection.py">Center Anchor to Selection</a></td>
+<td valign="top">Centers one selected anchor within the bounds of at least two selected nodes or one component.</td>
+<td valign="top">First selected layer.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Alignment/Equalise%20sidebearings.py">Equalise sidebearings</a></td>
+<td valign="top">Equalises left and right sidebearings by shifting the foreground; preserves advance width.</td>
+<td valign="top">Selected layers.</td>
+</tr>
+</tbody>
+</table>
 
 ### Anchors
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Move Anchor in All Masters 2](./Anchors/Move%20Anchor%20in%20All%20Masters.py) | Moves the selected anchor name by a chosen number of units using arrow buttons. Applies the same relative move wherever that anchor exists; vertical moves follow each master’s italic angle. | All masters of selected glyphs. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Anchors/Move%20Anchor%20in%20All%20Masters.py">Move Anchor<br>in All Masters 2</a></td>
+<td valign="top">Moves the selected anchor by a specified amount wherever it exists. Vertical moves follow each master’s italic angle.</td>
+<td valign="top">All masters of selected glyphs.</td>
+</tr>
+</tbody>
+</table>
 
 ### Coherency
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Show Possible Relatives](./Coherency/Show%20Relatives.py) | Shows predefined structural relatives of the selected glyph, generates English sample words for the group, or opens all relative groups. Replaces the current tab’s text, or creates a tab if none is open. | Proofing text; leaves outlines unchanged. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Coherency/Show%20Relatives.py">Show Possible Relatives</a></td>
+<td valign="top">Shows structural relatives, English sample words, or all relative groups. Replaces the current tab text, or opens a new tab.</td>
+<td valign="top">Proofing text; leaves outlines unchanged.</td>
+</tr>
+</tbody>
+</table>
 
 ### Colours
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Glyph Colouriser](./Colours/Glyph%20Colouriser.py) | Assigns separate overview colours to glyphs with paths only, components only, mixed construction, or export disabled. Non-exporting status takes priority; empty exporting glyphs are skipped. | Glyph colours across the whole font. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Colours/Glyph%20Colouriser.py">Glyph Colouriser</a></td>
+<td valign="top">Colours glyphs by construction: paths, components, mixed, or non-exporting. Non-exporting takes priority; empty exporting glyphs are skipped.</td>
+<td valign="top">Glyph colours across the whole font.</td>
+</tr>
+</tbody>
+</table>
 
 ### Components
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Disable Auto Alignment for Components in Selected Glyphs](./Components/Disable%20Automatic%20Alignment%20for%20Components.py) | Turns off automatic alignment for every component in the selected glyphs, allowing manual positioning. | All layers of selected glyphs. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Components/Disable%20Automatic%20Alignment%20for%20Components.py">Disable Auto Alignment<br>for Components<br>in Selected Glyphs</a></td>
+<td valign="top">Disables component auto-alignment for manual positioning.</td>
+<td valign="top">All layers of selected glyphs.</td>
+</tr>
+</tbody>
+</table>
 
 ### Copy Paste
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Copy Word as Vectors](./Copy%20Paste/Copy%20Word%20as%20Vectors.py) | Copies displayed text as editable vector artwork for pasting into Illustrator or InDesign, retaining its displayed placement. Select text with the Text tool to limit the copy; otherwise the whole tab is used. Run from an editable master rather than an interpolation preview. | Clipboard only; leaves the font unchanged. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Copy%20Paste/Copy%20Word%20as%20Vectors.py">Copy Word as Vectors</a></td>
+<td valign="top">Copies displayed text as editable Illustrator/InDesign vectors, preserving placement. Text-tool selection limits the copy; otherwise copies the whole tab. Requires an editable master.</td>
+<td valign="top">Clipboard only; leaves the font unchanged.</td>
+</tr>
+</tbody>
+</table>
 
 ### Diacritics
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Show Glyphs Using Selected Diacritic](./Diacritics/Show%20Glyphs%20Using%20Selected%20Diacritic.py) | Finds glyphs that directly use the first selected glyph as a component in any master, then opens the matches in a new tab. Also works with component sources other than diacritics. | Searches all glyphs’ master layers; leaves outlines unchanged. |
-| [Show All Glyphs Missing Kerning Groups](./Diacritics/Show%20All%20Glyphs%20Without%20Kern%20Groups.py) | Opens every glyph missing a left or right kerning group, including non-exporting glyphs. | Whole font; displays the current master. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Diacritics/Show%20Glyphs%20Using%20Selected%20Diacritic.py">Show Glyphs Using<br>Selected Diacritic</a></td>
+<td valign="top">Opens glyphs that directly use the first selected glyph as a component in any master. Works with any component source.</td>
+<td valign="top">Searches all glyphs’ master layers; leaves outlines unchanged.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Diacritics/Show%20All%20Glyphs%20Without%20Kern%20Groups.py">Show All Glyphs Missing<br>Kerning Groups</a></td>
+<td valign="top">Opens glyphs missing either kerning group, including non-exporting glyphs.</td>
+<td valign="top">Whole font; displays the current master.</td>
+</tr>
+</tbody>
+</table>
 
 ### Drawing
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Clear Selected Glyphs](./Drawing/Clear%20Selected%20Glyphs.py) | Clears selected glyphs’ layer contents, including foreground artwork, anchors, guides, annotations, and backgrounds. Choose the current master or all masters in the panel. | Glyphs selected in Font View. |
-| [Find Inflections](./Drawing/Find%20Inflections.py) | Finds glyphs with true inflections in cubic Bézier curves and opens them in a new tab. Checks outline paths without decomposing components. | Whole font, current master; leaves outlines unchanged. |
-| [Fix Inflections](./Drawing/Fix%20Inflections.py) | Removes inflections by shortening a control handle, keeping on-curve points and endpoint tangent directions fixed. Segments that cannot be repaired this way are left alone. Hold **Option** when running to process all masters. | Highlighted characters in Edit View; displayed layers by default. |
-| [Old Print](./Drawing/Old%20Print.py) | Creates an irregular printed appearance with corner rounding, wonkiness, detail, unevenness, and optional smoothing. Includes reusable presets and a temporary preview that is committed with Confirm or discarded when the panel closes. | Selected layers, or the first selected layer; Font View selection uses the current master. |
-| [Symmetrify KP](./Drawing/Symmetrify%20KP.py) | Applies reflection or rotational symmetry, including fivefold symmetry where the node structure permits it. Selecting at least two nodes on a path limits that path’s operation to those nodes; otherwise complete paths are used. | First selected layer. |
-| [Symmetrify Selected Nodes in All Masters KP](./Drawing/Symmetrify%20Selected%20Nodes%20in%20All%20Masters%20KP.py) | Applies symmetry to corresponding selected nodes across masters. Select at least two nodes on the same path; masters must have corresponding paths and nodes. | All masters of the active glyph. |
-| [Unround Corner](./Drawing/Unround%20Corner.py) | Replaces one rounded cubic corner with a sharp corner at the intersection of its adjoining tangents. Select exactly the two on-curve nodes at the ends of the rounded segment. | Selected corner in the active layer. |
-
-### Layers
-
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Clear Background Layers](./Layers/Clear%20Background%20Layers.py) | Removes background contents, including paths, components, anchors, and guides. | **All layers of every glyph in the font.** |
-| [Save Backup Layer](./Layers/Save%20Backup%20Layer.py) | Duplicates the first selected layer as a timestamped backup layer associated with the same master. | First selected layer; adds a layer inside the font. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Drawing/Clear%20Selected%20Glyphs.py">Clear Selected Glyphs</a></td>
+<td valign="top">Clears artwork, anchors, guides, annotations, and backgrounds in the current master or all masters.</td>
+<td valign="top">Glyphs selected in Font View.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Drawing/Find%20Inflections.py">Find Inflections</a></td>
+<td valign="top">Opens glyphs with true cubic Bézier inflections. Checks paths without decomposing components.</td>
+<td valign="top">Whole font, current master; leaves outlines unchanged.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Drawing/Fix%20Inflections.py">Fix Inflections</a></td>
+<td valign="top">Removes inflections by shortening a handle while preserving on-curve points and tangent directions. Leaves unrepairable segments unchanged. Hold <strong>Option</strong> for all masters.</td>
+<td valign="top">Highlighted characters in Edit View; displayed layers by default.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Drawing/Old%20Print.py">Old Print</a></td>
+<td valign="top">Simulates irregular print with rounding, wonkiness, detail, unevenness, and optional smoothing. Includes presets; Confirm commits the preview, closing discards it.</td>
+<td valign="top">Selected layers, or the first selected layer; Font View selection uses the current master.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Drawing/Symmetrify%20KP.py">Symmetrify KP</a></td>
+<td valign="top">Applies reflection or rotational symmetry, including fivefold when possible. Select at least two nodes on a path to limit its edits; otherwise uses complete paths.</td>
+<td valign="top">First selected layer.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Drawing/Symmetrify%20Selected%20Nodes%20in%20All%20Masters%20KP.py">Symmetrify Selected Nodes<br>in All Masters KP</a></td>
+<td valign="top">Applies symmetry to corresponding selected nodes. Requires at least two on one path and matching paths and nodes across masters.</td>
+<td valign="top">All masters of the active glyph.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Drawing/Unround%20Corner.py">Unround Corner</a></td>
+<td valign="top">Replaces a rounded cubic corner with the intersection of its adjoining tangents. Select exactly the two endpoint on-curve nodes.</td>
+<td valign="top">Selected corner in the active layer.</td>
+</tr>
+</tbody>
+</table>
 
 ### Production
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Export Package Builder](./Production/Export%20Package%20Builder.py) | Builds a configurable package with Desktop, Web, and Variable folders. Offers static OTF/TTF, web WOFF/WOFF2, and variable TTF/WOFF2 exports. | Export instances; active instances by default. Writes files to a chosen destination. |
-| [Set Export Names Based on Family Name](./Production/Set%20Export%20Names%20Based%20on%20Family%20Name.py) | Generates default family names, full names, PostScript names, filenames, export folders, and variable prefixes from the family name. Handles trial designations, duplicate names, and long names automatically. | All export instances, including inactive ones; updates naming settings without exporting or saving. |
-| [Set Family Alignment](./Production/Set%20Family%20Alignment.py) | Copies the active master’s alignment zones into the font’s `Family Alignment Zones` custom parameter. | Font-level custom parameter. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Production/Export%20Package%20Builder.py">Export Package Builder</a></td>
+<td valign="top">Builds configurable Desktop, Web, and Variable folders with OTF/TTF, WOFF/WOFF2, and variable TTF/WOFF2 output.</td>
+<td valign="top">Export instances; active instances by default. Writes files to a chosen destination.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Production/Set%20Export%20Names%20Based%20on%20Family%20Name.py">Set Export Names<br>Based on Family Name</a></td>
+<td valign="top">Generates family, full, PostScript, file, folder, and variable-prefix names from the family name. Handles trials, duplicates, and name-length limits.</td>
+<td valign="top">All export instances, including inactive ones; updates naming settings without exporting or saving.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Production/Set%20Family%20Alignment.py">Set Family Alignment</a></td>
+<td valign="top">Copies the active master’s alignment zones to the font’s <code>Family Alignment Zones</code> custom parameter.</td>
+<td valign="top">Font-level custom parameter.</td>
+</tr>
+</tbody>
+</table>
 
 ### Proofing
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Check Vertical Disalignments](./Proofing/Check%20Vertical%20Disalignments.py) | Finds on-curve nodes within 3 units of vertical metrics or related alignment-zone edges, excluding exact hits by default. Opens matching glyphs and prints a detailed report; component outlines are checked using decomposed copies where available. | Whole font, current master; leaves outlines unchanged. |
-| [Generate Samples in All Masters](./Proofing/Generate%20Samples%20in%20All%20Masters.py) | Opens sample text for multiple masters together in one tab. Choose which masters to show, reorder them, and use shared or individual sample strings. | Proofing tab using existing master layers. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Proofing/Check%20Vertical%20Disalignments.py">Check Vertical<br>Disalignments</a></td>
+<td valign="top">Finds on-curve nodes within 3 units of metrics or zone edges, excluding exact hits. Opens matches and prints a report; checks decomposed component copies where available.</td>
+<td valign="top">Whole font, current master; leaves outlines unchanged.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Proofing/Generate%20Samples%20in%20All%20Masters.py">Generate Samples<br>in All Masters</a></td>
+<td valign="top">Shows multiple masters’ sample text in one tab, with master selection, ordering, and shared or individual strings.</td>
+<td valign="top">Proofing tab using existing master layers.</td>
+</tr>
+</tbody>
+</table>
 
 ### Show
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Open All Drawn Glyphs](./Show/Open%20All%20Drawn%20Glyphs.py) | Opens drawn, exporting glyphs in sections for basic letters, extended letters, numbers, punctuation, and symbols. Excludes spaces, standalone marks, and the fraction slash. | Whole font, current master; leaves outlines unchanged. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Show/Open%20All%20Drawn%20Glyphs.py">Open All Drawn Glyphs</a></td>
+<td valign="top">Groups drawn, exporting glyphs into basic letters, extended letters, numbers, punctuation, and symbols. Excludes spaces, standalone marks, and the fraction slash.</td>
+<td valign="top">Whole font, current master; leaves outlines unchanged.</td>
+</tr>
+</tbody>
+</table>
 
 ### Spacing & Kerning
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Apply/Remove Kern Pairs Globally](./Spacing%20%26%20Kerning/Apply%3ARemove%20Kern%20Pairs%20Globally.py) | Copies the current pair’s kerning value from the active master to all masters, or removes that pair from the current master or all masters. | Current left-to-right pair; may affect kerning groups. |
-| [Assign Uppercase Kerning Groups to Small Caps](./Spacing%20%26%20Kerning/Assign%20UC%20Kern%20Groups%20to%20Small%20Caps.py) | Derives `.sc` kerning groups from each small cap’s uppercase counterpart. For example, an uppercase group `H` becomes `h.sc`; a missing source group clears the corresponding small-cap group. | All glyphs whose names end in `.sc`. |
-| [Copy Kerning From Source Pair](./Spacing%20%26%20Kerning/Copy%20Kerning%20from%20Source%20Pair.py) | Copies kerning from a typed source pair to the current Edit View pair, with an optional positive or negative adjustment. Uses target groups where available and glyph-level keys otherwise. | Current master or all masters; all masters enabled by default. |
-| [Show Glyphs Missing Kern Groups](./Spacing%20%26%20Kerning/Show%20Glyphs%20Missing%20Kern%20Groups.py) | Opens exporting glyphs that lack a left or right kerning group. Unlike the version in Diacritics, this skips non-exporting glyphs. | Whole font; displays the current master. |
-| [Show Positive Kern Pairs](./Spacing%20%26%20Kerning/Show%20Positive%20Kern%20Pairs.py) | Opens stored kerning pairs with positive values in a new tab, using representative glyphs for group pairs. | Current master; leaves kerning unchanged. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Apply%3ARemove%20Kern%20Pairs%20Globally.py">Apply/Remove Kern Pairs<br>Globally</a></td>
+<td valign="top">Copies the active master’s current pair value to all masters, or removes the pair from the current master or all masters.</td>
+<td valign="top">Current left-to-right pair; may affect kerning groups.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Assign%20UC%20Kern%20Groups%20to%20Small%20Caps.py">Assign Uppercase<br>Kerning Groups<br>to Small Caps</a></td>
+<td valign="top">Derives <code>.sc</code> groups from uppercase counterparts: <code>H</code> becomes <code>h.sc</code>. Clears the corresponding small-cap group when the source group is missing.</td>
+<td valign="top">All glyphs whose names end in <code>.sc</code>.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Copy%20Kerning%20from%20Source%20Pair.py">Copy Kerning<br>From Source Pair</a></td>
+<td valign="top">Copies a typed source pair’s kerning to the current Edit View pair, with an optional adjustment. Uses target groups when available, otherwise glyph-level keys.</td>
+<td valign="top">Current master or all masters; all masters enabled by default.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Show%20Glyphs%20Missing%20Kern%20Groups.py">Show Glyphs Missing<br>Kern Groups</a></td>
+<td valign="top">Opens exporting glyphs missing either kerning group.</td>
+<td valign="top">Whole font; displays the current master.</td>
+</tr>
+<tr>
+<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Show%20Positive%20Kern%20Pairs.py">Show Positive Kern Pairs</a></td>
+<td valign="top">Opens stored positive kerning pairs, choosing representative glyphs for group pairs.</td>
+<td valign="top">Current master; leaves kerning unchanged.</td>
+</tr>
+</tbody>
+</table>
 
 ### Variable Fonts
 
-| Script | What it does | Scope |
-| --- | --- | --- |
-| [Font Axes Player](./Variable%20Fonts/Font%20Axes%20Player.py) | Animates the Font Axes sliders in the active Edit tab. Choose axes and playback speed, pause at a preview, or restore the preview captured when the panel opened. | Interpolation preview only; leaves masters, instances, and outlines unchanged. |
+<table width="100%">
+<thead>
+<tr>
+<th width="35%" align="left">Script</th>
+<th width="45%" align="left">What it does</th>
+<th width="20%" align="left">Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top" nowrap><a href="./Variable%20Fonts/Font%20Axes%20Player.py">Font Axes Player</a></td>
+<td valign="top">Animates selected Font Axes sliders in the active Edit tab at a chosen speed. Pause holds the preview; Restore returns to the opening preview.</td>
+<td valign="top">Interpolation preview only; leaves masters, instances, and outlines unchanged.</td>
+</tr>
+</tbody>
+</table>
 
 ## Production workflows
 
