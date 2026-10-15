@@ -13,10 +13,6 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 
 Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanilla, if needed, from the **Modules** tab in Glyphs’ Plugin Manager. See the official [scripts guide](https://handbook.glyphsapp.com/scripts/) and [extension setup guide](https://glyphsapp.com/learn/extending-glyphs) for details.
 
-### Compatibility
-
-The collection includes scripts written or adapted for Glyphs 4. Check individual script headers for version requirements.
-
 ## Script catalogue
 
 - [Alignment](#alignment)
@@ -366,7 +362,7 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 </tbody>
 </table>
 
-## PRODUCTION WORKFLOWS
+## Production workflows
 
 ### Generate names from one family name
 
@@ -378,21 +374,18 @@ For example, with the family `Example Sans`:
 
 | Export | Generated filename, before the extension |
 | --- | --- |
-| Static Regular | `Example-Sans-Regular` |
-| Trial static Regular | `Example-Sans-Regular-UNLICENSED-TRIAL` |
-| Single retail variable export | `Example-Sans-Variable` |
-| Single trial variable export | `Example-Sans-Variable-UNLICENSED-TRIAL` |
+| Regular | `Example-Sans-Regular` |
+| Regular Trial | `Example-Sans-Regular-UNLICENSED-TRIAL` |
+| Variable Font | `Example-Sans-Variable` |
+| Variable Font Trial | `Example-Sans-Variable-UNLICENSED-TRIAL` |
 
-When several variable exports share a retail or trial category, their style names distinguish the filenames. Additional collisions receive numeric suffixes. Overlong machine names are shortened with a stable hash suffix.
 
-### Build a delivery package
+### Build a export package
 
-Use **Export Package Builder** for configurable desktop, web, and variable delivery. Choose a destination, select formats, and configure the package and subfolder names. Variable output requires a Variable Font Setting in Font Info’s Exports section; variable WOFF2 is attempted as an optional export.
-
-## Credits
-
-The Symmetrify tools are adapted from **Tim Ahrens / Just Another Foundry’s** [freemix-glyphsapp](https://github.com/justanotherfoundry/freemix-glyphsapp). Their source headers retain the original attribution and identify the upstream project as GPL-2.0 licensed.
+Use **Export Package Builder** for configurable desktop, web, and variable font file delivery. Choose a destination, select formats, and configure the package and subfolder names. Variable output requires a Variable Font Setting in Font Info’s Exports section; variable WOFF2 is attempted as an optional export.
 
 ## Contact
 
-Questions, bug reports, and suggestions are welcome at [mail@approxtype.com](mailto:mail@approxtype.com). For a bug report, include the script name, Glyphs version, what was selected, and any error message.
+Questions, bug reports, and suggestions are welcome at [mail@approxtype.com](mailto:mail@approxtype.com). For a bug report, include the Glyphs version, what was selected, and any error message.
+
+Thanks a lot! 😊
