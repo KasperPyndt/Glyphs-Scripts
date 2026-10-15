@@ -5,6 +5,7 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 [Installation](#installation) — [Script catalogue](#script-catalogue) — [Production workflows](#production-workflows) — [Experimental tools](#experimental-tools) — [Contact](#contact)
 
 <br>
+
 ## Installation
 
 1. Download this repository using **Code → Download ZIP** on GitHub and unzip it, or clone it with Git.
@@ -366,6 +367,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 </table>
 
 <br>
+
 ## Production workflows
 <br>
 ### Generate names from one family name
