@@ -17,18 +17,6 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 
 The collection includes scripts written or adapted for Glyphs 4. Check individual script headers for version requirements.
 
-## Using the scripts
-
-Open a font, make the selection described in the catalogue, and run the script from the **Script** menu.
-
-The **Scope** column describes what each script reads or changes:
-
-- **Selected layers** means the layers selected or active in Glyphs, usually in the current master.
-- **All masters** means every font master for the specified glyphs.
-- **Whole font** means the action is not limited to the current selection.
-
-Some menu titles differ from their filenames. The catalogue uses the menu title where one is defined; each name links to the corresponding source file.
-
 ## Script catalogue
 
 - [Alignment](#alignment)
