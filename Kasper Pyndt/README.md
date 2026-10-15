@@ -1,8 +1,8 @@
 # Glyphs Scripts
 
-Python scripts by Kasper Pyndt for drawing, spacing, proofing, and producing fonts in [Glyphs](https://glyphsapp.com/). This collection brings together small everyday utilities and larger tools for working across masters, preparing exports, and exploring letterforms.
+Python scripts by Kasper Pyndt (Apprixmate Type) for drawing, spacing, proofing, and producing fonts in [Glyphs 4](https://glyphsapp.com/). This collection brings together small everyday utilities and larger tools for working across masters, preparing exports, and exploring letterforms.
 
-[Installation](#installation) · [Script catalogue](#script-catalogue) · [Production workflows](#production-workflows) · [Experimental tools](#experimental-tools) · [Contact](#contact)
+[Installation](#installation) — [Script catalogue](#script-catalogue) — [Production workflows](#production-workflows) — [Experimental tools](#experimental-tools) — [Contact](#contact)
 
 ## Installation
 
