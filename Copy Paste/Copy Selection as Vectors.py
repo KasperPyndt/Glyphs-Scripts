@@ -1,8 +1,9 @@
-# MenuTitle: Copy Word as Vectors
+# MenuTitle: Copy Selection as Vectors
 # -*- coding: utf-8 -*-
+# Compatibility: Glyphs 3 and 4, Python 3.
 """Copy selected Edit View text (or the entire tab) as editable AICB/SVG.
 
-Glyphs 4, macOS. Select text with the Text tool, run this script, then paste
+Glyphs 3 and 4, macOS, Python 3. Select text with the Text tool, run this script, then paste
 into Illustrator or InDesign. Node selections do not limit the text.
 The font is never modified or saved. Only the clipboard is replaced.
 """
@@ -28,9 +29,11 @@ def path_commands(path):
     current = start = None
     open_contour = False
     for index in range(path.elementCount()):
-        # Glyphs 4's native bridge returns the output points with the element
-        # type. Unlike the older PyObjC call, no None placeholder is passed.
-        kind, native_points = path.elementAtIndex_associatedPoints_(index)
+        # Bridge signatures differ between the installed Python runtimes.
+        try:
+            kind, native_points = path.elementAtIndex_associatedPoints_(index)
+        except TypeError:
+            kind, native_points = path.elementAtIndex_associatedPoints_(index, None)
         # NSBezierPath: move=0, line=1, cubic=2, close=3, quadratic=4.
         kind = int(kind)
         count = {0: 1, 1: 1, 2: 3, 3: 0, 4: 2}.get(kind)

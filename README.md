@@ -173,7 +173,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 </thead>
 <tbody>
 <tr>
-<td valign="top" nowrap><a href="./Copy%20Paste/Copy%20Word%20as%20Vectors.py">Copy Word as Vectors</a></td>
+<td valign="top" nowrap><a href="./Copy%20Paste/Copy%20Word%20as%20Vectors.py">Copy Selection as Vectors</a></td>
 <td valign="top">Copies displayed text as editable Illustrator/InDesign vectors, preserving placement. Text-tool selection defines the copy; otherwise copies the whole tab.</td>
 <td valign="top">Clipboard only; leaves the font unchanged.</td>
 </tr>
