@@ -4,7 +4,9 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 
 [Installation](#installation) — [Script catalogue](#script-catalogue) — [Production workflows](#production-workflows) — [Experimental tools](#experimental-tools) — [Contact](#contact)
 
+
 ## Installation
+
 
 1. Download this repository using **Code → Download ZIP** on GitHub and unzip it, or clone it with Git.
 2. In Glyphs, choose **Script → Open Scripts Folder**.
