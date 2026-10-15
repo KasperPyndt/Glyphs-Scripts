@@ -1,5 +1,6 @@
 # MenuTitle: Generate Samples in All Masters
 # A panel that allows you to input sample strings in all masters at once, opening in the same tab.
+# Compatibility: Glyphs 3 and 4, Python 3.
 
 # -*- coding: utf-8 -*-
 
@@ -15,6 +16,15 @@ from AppKit import (
 import vanilla
 
 
+def newline_layer():
+	"""Create a line break using the initializer exposed by this Glyphs host."""
+	layer = GSControlLayer.alloc()
+	initializer = getattr(layer, "initWithChar_", None)
+	if callable(initializer):
+		return initializer(10)
+	return GSControlLayer.newline()
+
+
 class GenerateSampleTextInAllMasters:
 
 	# -----------------------------
@@ -23,31 +33,34 @@ class GenerateSampleTextInAllMasters:
 
 	WINDOW_WIDTH = 500
 
-	MARGIN = 8
+	MARGIN = 14
 	ROW_HEIGHT = 21
-	ROW_GAP = 3
+	ROW_GAP = 9
 	LABEL_HEIGHT = 15
 
-	GLOBAL_LABEL_TO_INPUT_GAP = 6
-	GLOBAL_INPUT_TO_ROWS_GAP = 8
-	ROWS_TO_BUTTON_GAP = 6
+	GLOBAL_LABEL_TO_INPUT_GAP = 5
+	GLOBAL_INPUT_TO_ROWS_GAP = 12
+	ROWS_TO_BUTTON_GAP = 10
 
-	BUTTON_WIDTH = 154
-	BUTTON_HEIGHT = 30
+	BUTTON_WIDTH = 176
+	BUTTON_HEIGHT = 20
 
+	# Small rounded buttons use a 17 pt logical height; native frames are larger.
 	REORDER_BUTTON_WIDTH = 22
-	REORDER_BUTTON_GAP = 2
+	REORDER_BUTTON_HEIGHT = 17
+	REORDER_BUTTON_GAP = 14
+	INPUT_TO_REORDER_GAP = 12
 
-	SHOW_X = MARGIN + 6
-	SHOW_WIDTH = 58
+	SHOW_X = MARGIN + 2
+	SHOW_WIDTH = 52
 
-	EDIT_X = MARGIN + 64
-	EDIT_WIDTH = 48
+	EDIT_X = MARGIN + 62
+	EDIT_WIDTH = 44
 
-	MASTER_NAME_X = MARGIN + 114
+	MASTER_NAME_X = MARGIN + 118
 	MASTER_NAME_WIDTH = 80
 
-	INPUT_X = MARGIN + 196
+	INPUT_X = MARGIN + 206
 
 	# -----------------------------
 	# Text
@@ -172,7 +185,7 @@ class GenerateSampleTextInAllMasters:
 
 	def addMasterRow(self, index, data, y):
 		reorderX = self.reorderX()
-		inputRightMargin = self.WINDOW_WIDTH - reorderX + 4
+		inputRightMargin = self.WINDOW_WIDTH - reorderX + self.INPUT_TO_REORDER_GAP
 
 		master = data["master"]
 
@@ -205,7 +218,7 @@ class GenerateSampleTextInAllMasters:
 		)
 
 		upButton = vanilla.Button(
-			(reorderX, y, self.REORDER_BUTTON_WIDTH, self.ROW_HEIGHT),
+			(reorderX, y + 2, self.REORDER_BUTTON_WIDTH, self.REORDER_BUTTON_HEIGHT),
 			"↑",
 			callback=self.moveMasterUp,
 			sizeStyle="small"
@@ -214,9 +227,9 @@ class GenerateSampleTextInAllMasters:
 		downButton = vanilla.Button(
 			(
 				reorderX + self.REORDER_BUTTON_WIDTH + self.REORDER_BUTTON_GAP,
-				y,
+				y + 2,
 				self.REORDER_BUTTON_WIDTH,
-				self.ROW_HEIGHT
+				self.REORDER_BUTTON_HEIGHT
 			),
 			"↓",
 			callback=self.moveMasterDown,
@@ -415,7 +428,7 @@ class GenerateSampleTextInAllMasters:
 
 	def rebuildWindow(self):
 		self.captureCurrentState()
-		self.w.close()
+		self.w.getNSWindow().performClose_(None)
 		self.buildWindow()
 
 	def syncUneditedRowsToGlobalText(self):
@@ -467,7 +480,7 @@ class GenerateSampleTextInAllMasters:
 			self.masterData[index],
 			self.masterData[index - 1],
 		)
-		self.w.close()
+		self.w.getNSWindow().performClose_(None)
 		self.buildWindow()
 
 	def moveMasterDown(self, sender):
@@ -481,7 +494,7 @@ class GenerateSampleTextInAllMasters:
 			self.masterData[index],
 			self.masterData[index + 1],
 		)
-		self.w.close()
+		self.w.getNSWindow().performClose_(None)
 		self.buildWindow()
 
 	# -----------------------------
@@ -541,9 +554,7 @@ class GenerateSampleTextInAllMasters:
 			allMissingCharacters.update(missingCharacters)
 
 			if index < len(shownMasterData) - 1:
-				# Glyphs 4.1's Python newline() wrapper passes an argument to a
-				# zero-argument __init__; the native initializer works reliably.
-				allLayers.append(GSControlLayer.alloc().initWithChar_(10))
+				allLayers.append(newline_layer())
 
 		if not allLayers:
 			Message(
