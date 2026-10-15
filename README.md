@@ -4,6 +4,7 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 
 [Installation](#installation) — [Script catalogue](#script-catalogue) — [Production workflows](#production-workflows) — [Experimental tools](#experimental-tools) — [Contact](#contact)
 
+<br>
 ## Installation
 
 1. Download this repository using **Code → Download ZIP** on GitHub and unzip it, or clone it with Git.
@@ -13,6 +14,7 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 
 Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanilla, if needed, from the **Modules** tab in Glyphs’ Plugin Manager. See the official [scripts guide](https://handbook.glyphsapp.com/scripts/) and [extension setup guide](https://glyphsapp.com/learn/extending-glyphs) for details.
 
+<br>
 ## Script catalogue
 
 - [Alignment](#alignment)
@@ -30,6 +32,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 - [Variable Fonts](#variable-fonts)
 - [Experimental tools](#experimental-tools)
 
+<br>
 ### Alignment
 
 <table width="100%">
@@ -362,8 +365,9 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 </tbody>
 </table>
 
+<br>
 ## Production workflows
-
+<br>
 ### Generate names from one family name
 
 Set the family name in **Font Info → Font**, then run **Set Export Names Based on Family Name**. The script uses existing instance style names and native variable export types to generate the remaining default names.
@@ -379,11 +383,11 @@ For example, with the family `Example Sans`:
 | Variable Font | `Example-Sans-Variable` |
 | Variable Font Trial | `Example-Sans-Variable-UNLICENSED-TRIAL` |
 
-<br><br>
+<br>
 ### Build an export package
 
 Use **Export Package Builder** for configurable desktop, web, and variable font file delivery. Choose a destination, select formats, and configure the package and subfolder names. Variable output requires a Variable Font Setting in Font Info’s Exports section; variable WOFF2 is attempted as an optional export.
-
+<br>
 ## Contact
 
 Questions, bug reports, and suggestions are welcome at [mail@approxtype.com](mailto:mail@approxtype.com). For a bug report, include the Glyphs version, what was selected, and any error message.
