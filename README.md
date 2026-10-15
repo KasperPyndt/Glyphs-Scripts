@@ -15,7 +15,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 
 ### Compatibility
 
-The collection includes scripts written or adapted for Glyphs 4, alongside older tools targeting Glyphs 3. Check individual script headers for version requirements.
+The collection includes scripts written or adapted for Glyphs 4. Check individual script headers for version requirements.
 
 - **Copy Word as Vectors**, **Font Axes Player**, **Glyph Colouriser**, **Old Print**, and the **Symmetrify KP** tools target Glyphs 4.
 - **Find Inflections** and **Fix Inflections** explicitly support Glyphs 3 and Glyphs 4.
