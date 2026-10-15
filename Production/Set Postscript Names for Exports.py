@@ -7,7 +7,7 @@ If the font’s global family name changes, this re-generates the localized fami
 for both “Unlicensed Trial” and “Variable” instances so they reflect the new base family.
 """
 
-from GlyphsApp import INSTANCETYPEVARIABLE
+from GlyphsApp import Glyphs, INSTANCETYPEVARIABLE
 import unicodedata
 import re
 

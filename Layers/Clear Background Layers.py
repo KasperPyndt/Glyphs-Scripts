@@ -5,7 +5,7 @@ Removes all elements (paths, components, anchors, guides, etc.)
 from the background layers of all glyphs in the current font.
 """
 
-import GlyphsApp
+from GlyphsApp import Glyphs, Message
 
 font = Glyphs.font  # Frontmost font
 

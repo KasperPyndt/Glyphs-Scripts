@@ -1,7 +1,7 @@
 # MenuTitle: Apply/Remove Kern Pairs Globally
 # -*- coding: utf-8 -*-
 
-from GlyphsApp import Glyphs, LTR
+from GlyphsApp import Glyphs, GSLTR
 from vanilla import FloatingWindow, Button
 from vanilla.dialogs import message
 
@@ -239,7 +239,7 @@ class GlobalKerningPairPanel(object):
 			active_master.id,
 			left_key,
 			right_key,
-			direction=LTR
+			direction=GSLTR
 		)
 
 		return (
@@ -274,7 +274,7 @@ class GlobalKerningPairPanel(object):
 					left_key,
 					right_key,
 					value,
-					direction=LTR
+					direction=GSLTR
 				)
 
 		finally:
@@ -313,7 +313,7 @@ class GlobalKerningPairPanel(object):
 				active_master.id,
 				left_key,
 				right_key,
-				direction=LTR
+				direction=GSLTR
 			)
 
 		finally:
@@ -349,7 +349,7 @@ class GlobalKerningPairPanel(object):
 					master.id,
 					left_key,
 					right_key,
-					direction=LTR
+					direction=GSLTR
 				)
 
 		finally:

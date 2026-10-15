@@ -12,7 +12,7 @@ Opens a panel where you can choose separate overview colours for:
 4. Glyphs that do not export
 
 Empty exporting glyphs are ignored.
-For Glyphs 3.
+For Glyphs 4.
 """
 
 from GlyphsApp import Glyphs

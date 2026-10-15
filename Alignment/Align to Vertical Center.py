@@ -1,138 +1,118 @@
 # MenuTitle: Align to Vertical Center
-# Aligns selected shapes to the vertical center between baseline and cap-height
+# Aligns selected geometry to the vertical center between baseline and cap height.
+# If nothing is selected inside a glyph, the whole layer is moved.
 
-# -*- coding: utf-8 -*-
+from Foundation import NSPoint
+from GlyphsApp import Glyphs
 
-from GlyphsApp import Glyphs, GSNode, GSPath, GSComponent, GSAnchor
 
-def collect_full_layer_positions(layer):
-    """Fallback when nothing is explicitly selected: use whole glyph geometry."""
+def unique_selected_layers(font):
+    result = []
+    seen = set()
+    for layer in font.selectedLayers:
+        glyph = layer.parent
+        key = (glyph.id, layer.layerId)
+        if key not in seen:
+            seen.add(key)
+            result.append(layer)
+    return result
+
+
+def selected_geometry(layer):
+    """Return selected nodes, components and anchors without duplicate path moves."""
+    nodes = [
+        node
+        for path in layer.paths
+        for node in path.nodes
+        if node.selected
+    ]
+    components = [component for component in layer.components if component.selected]
+    anchors = [anchor for anchor in layer.anchors if anchor.selected]
+    return nodes, components, anchors
+
+
+def geometry_y_values(layer, nodes=None, components=None, anchors=None):
     ys = []
 
-    # All nodes in all paths
-    for path in layer.paths:
-        for node in path.nodes:
-            ys.append(node.y)
+    if nodes is None:
+        nodes = [node for path in layer.paths for node in path.nodes]
+    if components is None:
+        components = list(layer.components)
+    if anchors is None:
+        anchors = list(layer.anchors)
 
-    # Component bounds
-    for comp in layer.components:
-        b = comp.bounds
-        ys.append(b.origin.y)
-        ys.append(b.origin.y + b.size.height)
+    ys.extend(node.position.y for node in nodes)
 
-    # Anchors
-    for anchor in layer.anchors:
-        ys.append(anchor.position.y)
+    for component in components:
+        bounds = component.bounds
+        ys.extend((bounds.origin.y, bounds.origin.y + bounds.size.height))
 
+    ys.extend(anchor.position.y for anchor in anchors)
     return ys
 
-def shift_whole_layer(layer, deltaY):
-    """Move ALL geometric elements in a layer by deltaY."""
-    # Paths
-    for path in layer.paths:
-        for node in path.nodes:
-            node.y += deltaY
 
-    # Components
-    for comp in layer.components:
-        x, y = comp.position
-        comp.position = (x, y + deltaY)
+def move_selected_geometry(nodes, components, anchors, delta_y):
+    for node in nodes:
+        node.position = NSPoint(node.position.x, node.position.y + delta_y)
 
-    # Anchors
-    for anchor in layer.anchors:
-        x, y = anchor.position
-        anchor.position = (x, y + deltaY)
+    for component in components:
+        component.position = NSPoint(
+            component.position.x,
+            component.position.y + delta_y,
+        )
+
+    for anchor in anchors:
+        anchor.position = NSPoint(
+            anchor.position.x,
+            anchor.position.y + delta_y,
+        )
 
 
-def alignSelectionToCapHeight():
-    font = Glyphs.font
-    if not font:
-        print("No font open.")
-        return
+font = Glyphs.font
+if not font:
+    raise RuntimeError("No font open.")
 
-    font.disableUpdateInterface()
-
-    for layer in font.selectedLayers:
-        parentGlyph = layer.parent
+font.disableUpdateInterface()
+try:
+    for layer in unique_selected_layers(font):
+        glyph = layer.parent
         master = layer.master
+        target_center_y = master.capHeight * 0.5
 
-        capHeight = master.capHeight
-        capCenterY = capHeight * 0.5
+        nodes, components, anchors = selected_geometry(layer)
+        has_selection = bool(nodes or components or anchors)
 
-        # Explicit selections
-        selectedNodes = [n for n in layer.selection if isinstance(n, GSNode)]
-        selectedPaths = [p for p in layer.selection if isinstance(p, GSPath)]
-        selectedComponents = [c for c in layer.selection if isinstance(c, GSComponent)]
-        selectedAnchors = [a for a in layer.selection if isinstance(a, GSAnchor)]
-
-        hasExplicitSelection = bool(selectedNodes or selectedPaths or selectedComponents or selectedAnchors)
-
-        # Collect Y coordinates:
-        selectedYs = []
-
-        if hasExplicitSelection:
-            # Nodes
-            for node in selectedNodes:
-                selectedYs.append(node.y)
-
-            # Paths (all nodes inside)
-            for path in selectedPaths:
-                for node in path.nodes:
-                    selectedYs.append(node.y)
-
-            # Components (true visual bounds)
-            for comp in selectedComponents:
-                b = comp.bounds
-                selectedYs.append(b.origin.y)
-                selectedYs.append(b.origin.y + b.size.height)
-
-            # Anchors
-            for anchor in selectedAnchors:
-                selectedYs.append(anchor.position.y)
+        if has_selection:
+            ys = geometry_y_values(layer, nodes, components, anchors)
         else:
-            # TEXT MODE FALLBACK: using full glyph geometry
-            selectedYs = collect_full_layer_positions(layer)
+            ys = geometry_y_values(layer)
 
-        if not selectedYs:
-            print(f"{parentGlyph.name}: no geometry found")
+        if not ys:
+            print(f"{glyph.name}: no geometry found")
             continue
 
-        selectionMinY = min(selectedYs)
-        selectionMaxY = max(selectedYs)
-        selectionCenterY = (selectionMinY + selectionMaxY) * 0.5
+        current_center_y = (min(ys) + max(ys)) * 0.5
+        delta_y = target_center_y - current_center_y
 
-        deltaY = capCenterY - selectionCenterY
-
-        if abs(deltaY) < 0.01:
-            print(f"{parentGlyph.name}: already aligned")
+        if abs(delta_y) < 0.01:
+            print(f"{glyph.name}: already aligned")
             continue
 
-        if hasExplicitSelection:
-            # Move nodes
-            for node in selectedNodes:
-                node.y += deltaY
+        glyph.beginUndo()
+        layer.beginChanges()
+        try:
+            if has_selection:
+                move_selected_geometry(nodes, components, anchors, delta_y)
+            else:
+                # Whole-layer transform is the most reliable way to keep all
+                # geometric layer content together.
+                layer.applyTransform((1.0, 0.0, 0.0, 1.0, 0.0, delta_y))
+        finally:
+            layer.endChanges()
+            glyph.endUndo()
 
-            # Move path groups
-            for path in selectedPaths:
-                for node in path.nodes:
-                    node.y += deltaY
-
-            # Move components
-            for comp in selectedComponents:
-                x, y = comp.position
-                comp.position = (x, y + deltaY)
-
-            # Move anchors
-            for anchor in selectedAnchors:
-                x, y = anchor.position
-                anchor.position = (x, y + deltaY)
-
-        else:
-            # TEXT MODE: shift entire layer content
-            shift_whole_layer(layer, deltaY)
-
-        print(f"Aligned in {parentGlyph.name} ({layer.name}) by {deltaY:.1f} units")
-
+        print(f"Aligned {glyph.name} ({layer.name}) by {delta_y:.1f} units")
+finally:
     font.enableUpdateInterface()
 
-alignSelectionToCapHeight()
+Glyphs.redraw()

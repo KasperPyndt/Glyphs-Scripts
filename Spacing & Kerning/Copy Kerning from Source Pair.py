@@ -1,7 +1,7 @@
 # MenuTitle: Copy Kerning From Source Pair
 # -*- coding: utf-8 -*-
 
-from GlyphsApp import Glyphs, LTR
+from GlyphsApp import Glyphs, GSLTR
 from vanilla import FloatingWindow, TextBox, EditText, Button, CheckBox
 from vanilla.dialogs import message
 
@@ -187,7 +187,7 @@ class CopyKerningFromSourcePair(object):
 			return None, None
 
 		layers = list(tab.layers)
-		cursorIndex = tab.textCursor
+		cursorIndex = tab.layersCursor
 
 		if cursorIndex is None:
 			message("No cursor position", "Place the text cursor between the target pair.")
@@ -258,7 +258,7 @@ class CopyKerningFromSourcePair(object):
 					masterID,
 					leftKey,
 					rightKey,
-					LTR,
+					GSLTR,
 				)
 
 				if value is not None:
@@ -299,7 +299,7 @@ class CopyKerningFromSourcePair(object):
 			leftKey,
 			rightKey,
 			value,
-			LTR,
+			GSLTR,
 		)
 
 		return leftKey, rightKey, missingGroups

@@ -541,7 +541,9 @@ class GenerateSampleTextInAllMasters:
 			allMissingCharacters.update(missingCharacters)
 
 			if index < len(shownMasterData) - 1:
-				allLayers.append(GSControlLayer.newline())
+				# Glyphs 4.1's Python newline() wrapper passes an argument to a
+				# zero-argument __init__; the native initializer works reliably.
+				allLayers.append(GSControlLayer.alloc().initWithChar_(10))
 
 		if not allLayers:
 			Message(

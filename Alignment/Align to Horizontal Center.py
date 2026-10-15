@@ -1,92 +1,294 @@
 # MenuTitle: Align to Horizontal Center
-# Aligns selected anchors, components, or outlines to the canvas horizontal center axis
+# -*- coding: utf-8 -*-
+"""
+Centers the current selection horizontally inside the existing glyph width.
 
+Glyphs 4 behaviour:
+- Selected contour/path: centers the selected contour(s) as one group.
+- Selected component(s): centers them as part of the same selection group.
+- Selected on-curve node(s) or off-curve handle(s): centers those selected points.
+- Selected anchors are supported too.
+- If nothing is selected, all editable foreground content is centered as one group.
+- The layer width is never changed.
+- Italic layers are centered on the italic center axis using the layer's italic
+  angle and the master's slant height.
+
+The script uses Glyphs' native layer transformation methods rather than
+manually rewriting individual object positions. This is safer for mixed
+selections and lets Glyphs handle its own selection bookkeeping.
+"""
+
+from math import isfinite, radians, tan
+
+from AppKit import NSAffineTransform
 from GlyphsApp import Glyphs
-from Foundation import NSPoint
-from math import radians, tan
 
 
-font = Glyphs.font
-if not font:
-    raise Exception("No font open.")
+EPSILON = 1e-7
 
 
-def italic_center_x(layer, y):
+def unique_selected_layers(font):
+    """Return selected layers once each, preserving their UI order."""
+    layers = []
+    seen = set()
+
+    for layer in font.selectedLayers:
+        if layer is None:
+            continue
+
+        glyph = getattr(layer, "parent", None)
+        glyph_id = getattr(glyph, "id", None)
+        layer_id = getattr(layer, "layerId", None)
+
+        # IDs are preferable, but Python object identity is a safe fallback.
+        key = (
+            str(glyph_id) if glyph_id is not None else id(glyph),
+            str(layer_id) if layer_id is not None else id(layer),
+        )
+
+        if key not in seen:
+            seen.add(key)
+            layers.append(layer)
+
+    return layers
+
+
+def rect_is_usable(rect):
+    """Accept point selections (zero-size rects), reject null/invalid rects."""
+    if rect is None:
+        return False
+
+    try:
+        values = (
+            float(rect.origin.x),
+            float(rect.origin.y),
+            float(rect.size.width),
+            float(rect.size.height),
+        )
+    except Exception:
+        return False
+
+    return all(isfinite(value) for value in values)
+
+
+def rect_center(rect):
     return (
-        layer.width / 2.0
-        + (y - layer.master.xHeight / 2.0) * tan(radians(layer.master.italicAngle))
+        float(rect.origin.x) + float(rect.size.width) * 0.5,
+        float(rect.origin.y) + float(rect.size.height) * 0.5,
     )
 
 
-def bounds_center(bounds):
-    return NSPoint(
-        bounds.origin.x + bounds.size.width / 2.0,
-        bounds.origin.y + bounds.size.height / 2.0,
-    )
+def layer_has_selection(layer):
+    try:
+        return len(layer.selection) > 0
+    except Exception:
+        try:
+            return bool(list(layer.selection))
+        except Exception:
+            return False
 
 
-def move_by_x(items, dx):
-    for item in items:
-        item.position = NSPoint(item.position.x + dx, item.position.y)
+def layer_has_drawable_content(layer):
+    """Bounds are meaningful when there is at least a path or component."""
+    try:
+        return len(layer.paths) > 0 or len(layer.components) > 0
+    except Exception:
+        return True
 
 
-def align_items(layer, items, center):
-    if not items:
+def selection_bounds(layer):
+    """Glyphs 4 selection bounds, with a compatibility fallback."""
+    try:
+        return layer.selectionBounds
+    except Exception:
+        try:
+            return layer.boundsOfSelection()
+        except Exception:
+            return None
+
+
+def content_bounds(layer):
+    try:
+        return layer.bounds
+    except Exception:
+        try:
+            return layer.bounds()
+        except Exception:
+            return None
+
+
+def italic_angle_for_layer(layer):
+    """Use the effective layer angle, falling back to its associated master."""
+    angle = None
+
+    try:
+        angle = float(layer.italicAngle)
+    except Exception:
+        pass
+
+    if angle is None or not isfinite(angle):
+        try:
+            angle = float(layer.master.italicAngleForLayer_(layer))
+        except Exception:
+            try:
+                angle = float(layer.master.italicAngle)
+            except Exception:
+                angle = 0.0
+
+    return angle if isfinite(angle) else 0.0
+
+
+def slant_height_for_layer(layer):
+    """Return Glyphs' slant origin height for this layer."""
+    master = getattr(layer, "master", None)
+    if master is None:
+        return 0.0
+
+    try:
+        value = float(master.slantHeightForLayer_(layer))
+        if isfinite(value):
+            return value
+    except Exception:
+        pass
+
+    # Glyphs' traditional fallback is half the x-height.
+    try:
+        value = float(master.xHeightForLayer_(layer)) * 0.5
+        if isfinite(value):
+            return value
+    except Exception:
+        pass
+
+    try:
+        value = float(master.xHeight) * 0.5
+        if isfinite(value):
+            return value
+    except Exception:
+        pass
+
+    return 0.0
+
+
+def italic_center_x(layer, y, width):
+    """X coordinate of the italic center axis at vertical position y."""
+    angle = italic_angle_for_layer(layer)
+    if abs(angle) < EPSILON:
+        return width * 0.5
+
+    slant_height = slant_height_for_layer(layer)
+    return width * 0.5 + (float(y) - slant_height) * tan(radians(angle))
+
+
+def horizontal_translation(delta_x):
+    transform = NSAffineTransform.new()
+    transform.translateXBy_yBy_(float(delta_x), 0.0)
+    return transform
+
+
+def transform_selected_content(layer, transform):
+    """Use Glyphs' native selection transform."""
+    if hasattr(layer, "transformSelection_"):
+        layer.transformSelection_(transform)
         return
 
-    target_x = italic_center_x(layer, center.y)
-    move_by_x(items, target_x - center.x)
+    # Fallback for older Glyphs 4 builds.
+    if hasattr(layer, "transform_checkForSelection_doComponents_"):
+        layer.transform_checkForSelection_doComponents_(transform, True, True)
+        return
+
+    layer.transform_checkForSelection_(transform, True)
 
 
-def selected_nodes(layer):
-    nodes = []
+def transform_all_content(layer, transform):
+    """Transform the layer's editable foreground content, including components."""
+    if hasattr(layer, "transform_checkForSelection_doComponents_"):
+        layer.transform_checkForSelection_doComponents_(transform, False, True)
+        return
 
-    for path in layer.paths:
-        if path.selected:
-            nodes.extend(path.nodes)
+    layer.transform_checkForSelection_(transform, False)
+
+
+def center_layer(layer):
+    """Center either the current selection or the whole layer as one group."""
+    original_width = float(layer.width)
+    has_selection = layer_has_selection(layer)
+
+    if has_selection:
+        bounds = selection_bounds(layer)
+    else:
+        if not layer_has_drawable_content(layer):
+            return False
+        bounds = content_bounds(layer)
+
+    if not rect_is_usable(bounds):
+        # Important: if some unsupported object (for example a guide) is selected,
+        # do not interpret that as "nothing selected" and unexpectedly move the glyph.
+        return False
+
+    center_x, center_y = rect_center(bounds)
+    target_x = italic_center_x(layer, center_y, original_width)
+    delta_x = target_x - center_x
+
+    if abs(delta_x) < EPSILON:
+        return False
+
+    transform = horizontal_translation(delta_x)
+
+    # Width should not be affected by a translation, but preserve it explicitly
+    # so metric keys/component updates cannot accidentally alter the canvas width.
+    try:
+        if has_selection:
+            transform_selected_content(layer, transform)
         else:
-            nodes.extend(node for node in path.nodes if node.selected)
+            transform_all_content(layer, transform)
+    finally:
+        if abs(float(layer.width) - original_width) > EPSILON:
+            layer.width = original_width
 
-    return nodes
-
-
-def nodes_center(nodes):
-    min_x = min(node.position.x for node in nodes)
-    max_x = max(node.position.x for node in nodes)
-    min_y = min(node.position.y for node in nodes)
-    max_y = max(node.position.y for node in nodes)
-
-    return NSPoint((min_x + max_x) / 2.0, (min_y + max_y) / 2.0)
+    return True
 
 
-font.disableUpdateInterface()
+def main():
+    font = Glyphs.font
+    if font is None:
+        return
 
-try:
-    for layer in font.selectedLayers:
-        glyph = layer.parent
-        glyph.beginUndo()
+    layers = unique_selected_layers(font)
+    if not layers:
+        return
 
-        try:
-            for anchor in layer.anchors:
-                if anchor.selected:
-                    align_items(layer, [anchor], anchor.position)
+    errors = []
+    font.disableUpdateInterface()
 
-            for component in layer.components:
-                if component.selected:
-                    align_items(layer, [component], bounds_center(component.bounds))
+    try:
+        for layer in layers:
+            glyph = getattr(layer, "parent", None)
+            if glyph is None:
+                continue
 
-            nodes = selected_nodes(layer)
-            if nodes:
-                align_items(layer, nodes, nodes_center(nodes))
+            undo_started = False
+            try:
+                glyph.beginUndo()
+                undo_started = True
+                center_layer(layer)
+            except Exception as error:
+                glyph_name = getattr(glyph, "name", "<unknown glyph>")
+                errors.append("{}: {}".format(glyph_name, error))
+            finally:
+                if undo_started:
+                    try:
+                        glyph.endUndo()
+                    except Exception:
+                        pass
+    finally:
+        font.enableUpdateInterface()
+        Glyphs.redraw()
 
-        finally:
-            glyph.endUndo()
+    if errors:
+        Glyphs.showMacroWindow()
+        print("Align to Horizontal Center — errors:\n")
+        for error in errors:
+            print("• " + error)
 
-    Glyphs.redraw()
-    Glyphs.showNotification(
-        "Aligned to italic center",
-        "Selected anchors, components, and outlines were aligned."
-    )
 
-finally:
-    font.enableUpdateInterface()
+main()
