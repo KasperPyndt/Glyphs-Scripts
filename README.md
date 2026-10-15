@@ -107,7 +107,6 @@ The collection includes scripts written or adapted for Glyphs 4. Check individua
 
 | Script | What it does | Scope |
 | --- | --- | --- |
-| [Approximate Type Package Builder](./Production/Approximate%20Type%20Package%20Builder.py) | Exports static OTF and WOFF2 deliveries into `desktop` and `web` folders. Creates complete-family and individual-style folders with matching ZIP archives, using Approximate Type’s folder naming conventions. | Static export instances; active instances by default. Writes files to a chosen destination. |
 | [Export Package Builder](./Production/Export%20Package%20Builder.py) | Builds a configurable package with Desktop, Web, and Variable folders. Offers static OTF/TTF, web WOFF/WOFF2, and variable TTF/WOFF2 exports. | Export instances; active instances by default. Writes files to a chosen destination. |
 | [Set Export Names Based on Family Name](./Production/Set%20Export%20Names%20Based%20on%20Family%20Name.py) | Generates default family names, full names, PostScript names, filenames, export folders, and variable prefixes from the family name. Handles trial designations, duplicate names, and long names automatically. | All export instances, including inactive ones; updates naming settings without exporting or saving. |
 | [Set Family Alignment](./Production/Set%20Family%20Alignment.py) | Copies the active master’s alignment zones into the font’s `Family Alignment Zones` custom parameter. | Font-level custom parameter. |
