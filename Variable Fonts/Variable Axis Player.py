@@ -1,4 +1,4 @@
-# MenuTitle: Font Axes Player
+# MenuTitle: Variable Axis Player
 # -*- coding: utf-8 -*-
 # Compatibility: Glyphs 4 only, Python 3 (native Font Axes sidebar).
 """Play Glyphs 4's Font Axes sliders in the active Edit tab.
