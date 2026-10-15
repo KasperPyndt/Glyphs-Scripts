@@ -3,6 +3,7 @@
 Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing, and producing fonts in [Glyphs 4](https://glyphsapp.com/). This collection brings together small everyday utilities and tools for working across masters, preparing exports, and exploring letterforms.
 
 [Installation](#installation) — [Script catalogue](#script-catalogue) — [Production workflows](#production-workflows) — [Experimental tools](#experimental-tools) — [Contact](#contact)
+
 <br>
 
 ## Installation
