@@ -1,6 +1,6 @@
 # Glyphs Scripts
 
-Python scripts by Kasper Pyndt (Apprixmate Type) for drawing, spacing, proofing, and producing fonts in [Glyphs 4](https://glyphsapp.com/). This collection brings together small everyday utilities and larger tools for working across masters, preparing exports, and exploring letterforms.
+Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing, and producing fonts in [Glyphs 4](https://glyphsapp.com/). This collection brings together small everyday utilities and tools for working across masters, preparing exports, and exploring letterforms.
 
 [Installation](#installation) — [Script catalogue](#script-catalogue) — [Production workflows](#production-workflows) — [Experimental tools](#experimental-tools) — [Contact](#contact)
 
@@ -17,13 +17,9 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 
 The collection includes scripts written or adapted for Glyphs 4. Check individual script headers for version requirements.
 
-- **Copy Word as Vectors**, **Font Axes Player**, **Glyph Colouriser**, **Old Print**, and the **Symmetrify KP** tools target Glyphs 4.
-- **Find Inflections** and **Fix Inflections** explicitly support Glyphs 3 and Glyphs 4.
-- The two **Package Builder** scripts currently identify Glyphs 3 as their target in the source.
-
 ## Using the scripts
 
-Open a font, make the selection described in the catalogue, and run the script from the **Script** menu. Tools with a panel expose their options there; simple actions run immediately.
+Open a font, make the selection described in the catalogue, and run the script from the **Script** menu.
 
 The **Scope** column describes what each script reads or changes:
 
