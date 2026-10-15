@@ -13,6 +13,7 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 4. Hold **Option** and choose **Script → Reload Scripts**. The scripts will appear under **Script** in their corresponding folders.
 
 Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanilla, if needed, from the **Modules** tab in Glyphs’ Plugin Manager. See the official [scripts guide](https://handbook.glyphsapp.com/scripts/) and [extension setup guide](https://glyphsapp.com/learn/extending-glyphs) for details.
+
 <br>
 
 ## Script catalogue
@@ -31,6 +32,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 - [Spacing & Kerning](#spacing--kerning)
 - [Variable Fonts](#variable-fonts)
 - [Experimental tools](#experimental-tools)
+
 <br>
 
 ### Alignment
@@ -385,10 +387,13 @@ For example, with the family `Example Sans`:
 | Variable Font Trial | `Example-Sans-Variable-UNLICENSED-TRIAL` |
 
 <br>
+
 ### Build an export package
 
 Use **Export Package Builder** for configurable desktop, web, and variable font file delivery. Choose a destination, select formats, and configure the package and subfolder names. Variable output requires a Variable Font Setting in Font Info’s Exports section; variable WOFF2 is attempted as an optional export.
+
 <br>
+
 ## Contact
 
 Questions, bug reports, and suggestions are welcome at [mail@approxtype.com](mailto:mail@approxtype.com). For a bug report, include the Glyphs version, what was selected, and any error message.
