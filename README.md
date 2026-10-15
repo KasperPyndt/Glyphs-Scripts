@@ -11,7 +11,7 @@ Python scripts by Kasper Pyndt (Approximate Type) for drawing, spacing, proofing
 1. Download this repository using **Code → Download ZIP** on GitHub and unzip it, or clone it with Git.
 2. In Glyphs, choose **Script → Open Scripts Folder**.
 3. Copy the collection into that folder. Keep the category folders together to preserve their organization in the Script menu.
-4. Hold **Option** and choose **Script → Reload Scripts**. The scripts will appear under **Script** in their corresponding folders.
+4. Hold **Option** and choose **Script → Reload Scripts**.
 
 Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanilla, if needed, from the **Modules** tab in Glyphs’ Plugin Manager. See the official [scripts guide](https://handbook.glyphsapp.com/scripts/) and [extension setup guide](https://glyphsapp.com/learn/extending-glyphs) for details.
 
