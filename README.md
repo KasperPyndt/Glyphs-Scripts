@@ -361,7 +361,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 </thead>
 <tbody>
 <tr>
-<td valign="top" nowrap><a href="./Variable%20Fonts/Font%20Axes%20Player.py">Font Axes Player</a></td>
+<td valign="top" nowrap><a href="./Variable%20Fonts/Variable%20Axis%20Player.py">Variable Axis Player</a></td>
 <td valign="top">Animates selected Font Axes sliders in the active Edit tab at a chosen speed. Pause holds the preview; Restore returns to the opening preview.</td>
 <td valign="top">Interpolation preview only; leaves masters, instances, and outlines unchanged.</td>
 </tr>
