@@ -5,6 +5,7 @@
 
 Choose axes, set the playback speed, then Play. Pause leaves
 that preview in place. Restore returns to the preview captured on opening.
+Pause modes hold for one second at extremes or matching active instances.
 Closing the panel stops its timer. No masters, instances or outlines are edited.
 
 Native sidebar integration verified with Glyphs 4.1.1 (4108). The sidebar's
@@ -20,13 +21,13 @@ import traceback
 import vanilla
 from AppKit import NSApp, NSSlider, NSTableView
 from Foundation import NSRunLoop, NSDefaultRunLoopMode, NSTimer
-from GlyphsApp import Glyphs, Message
+from GlyphsApp import Glyphs, Message, INSTANCETYPESINGLE
 
-VERSION = "1.2.0"
+VERSION = "1.3.2"
 SINGLETON = "_kp_font_axes_player"
 FRAME_RATES = (30.0, 20.0, 12.0)
 CONTEXT_CHECK_INTERVAL = 0.5
-LABEL_INTERVAL = 0.25
+HOLD_SECONDS = 1.0
 
 
 def wave(phase, smooth=True):
@@ -41,6 +42,88 @@ def phase_for_value(value, low, high, smooth=True, descending=False):
     unit = max(0.0, min(1.0, (value - low) / (high - low)))
     phase = math.acos(1.0 - 2.0 * unit) / (2.0 * math.pi) if smooth else unit * 0.5
     return (1.0 - phase) % 1.0 if descending else phase
+
+
+class DwellPath:
+    """Travel between exact axis locations and hold at each stop, without sleep."""
+    def __init__(self, stops, current, ranges, descending=False):
+        if len(stops) < 2:
+            raise ValueError("At least two distinct stops are needed.")
+        self.stops = [tuple(stop) for stop in stops]
+        self.values = tuple(current)
+        self.ranges = tuple(ranges)
+        self.direction = -1 if descending else 1
+        self.hold = 0.0
+        self.arrived = False
+        # Enter the route from the current preview, avoiding an initial jump.
+        candidates = [i for i, stop in enumerate(self.stops)
+                      if (stop[0] - current[0]) * self.direction > 1e-9]
+        self.target = (candidates[-1] if descending else candidates[0]) if candidates else (0 if descending else len(stops)-1)
+        matches = [i for i, stop in enumerate(self.stops)
+                   if all(abs(a-b) <= max(1.0, hi-lo)*1e-9
+                          for a, b, (lo, hi) in zip(stop, current, ranges))]
+        if matches:
+            self.target = matches[0]
+            self.hold = HOLD_SECONDS
+            self.arrived = True
+
+    def next_stop(self):
+        if self.target == len(self.stops)-1:
+            self.direction = -1
+        elif self.target == 0:
+            self.direction = 1
+        self.target += self.direction
+        self.arrived = False
+
+    def advance(self, elapsed, cycle_seconds):
+        while elapsed > 1e-12:
+            if self.arrived:
+                consumed = min(elapsed, self.hold)
+                self.hold -= consumed
+                elapsed -= consumed
+                if self.hold > 1e-12:
+                    break
+                self.next_stop()
+                if elapsed <= 1e-12:
+                    break
+            destination = self.stops[self.target]
+            distance = max(abs(b-a)/(hi-lo) for a, b, (lo, hi) in
+                           zip(self.values, destination, self.ranges))
+            travel_seconds = distance * cycle_seconds * 0.5
+            if travel_seconds <= elapsed + 1e-12:
+                self.values = destination
+                elapsed = max(0.0, elapsed-travel_seconds)
+                self.hold = HOLD_SECONDS
+                self.arrived = True
+            else:
+                amount = elapsed/travel_seconds
+                self.values = tuple(a+(b-a)*amount for a, b in zip(self.values, destination))
+                elapsed = 0.0
+        return self.values
+
+
+def instance_stops(font, moving, ranges, fixed_values):
+    """Exact static instance locations; unchecked axes stay at their current value."""
+    stops = []
+    for instance in font.instances:
+        if instance.type != INSTANCETYPESINGLE or not instance.active or instance.manualInterpolation:
+            continue
+        values = tuple(float(v) for v in instance.axes)
+        if len(values) != len(ranges) or not all(math.isfinite(v) for v in values):
+            continue
+        if any(abs(values[i]-fixed_values[i]) > max(1.0, hi-lo)*1e-7
+               for i, (lo, hi) in enumerate(ranges) if i not in moving):
+            continue
+        if any(values[i] < ranges[i][0]-1e-9 or values[i] > ranges[i][1]+1e-9 for i in moving):
+            continue
+        stop = tuple(values[i] for i in moving)
+        if stop not in stops:
+            stops.append(stop)
+    # Along the first checked axis, then the remaining checked axes.
+    stops.sort()
+    if len(stops) < 2:
+        raise RuntimeError("Pause at instances needs two distinct active static instances matching the unchecked axes. Enable more axes or check Font Info → Exports.")
+    return stops
 
 
 def descendants(root):
@@ -115,61 +198,58 @@ class FontAxesPlayer:
         self.closed = False
         self.phases = [0.0] * len(self.axes)
         self.last_time = None
-        self.last_label_time = 0.0
         self.last_context_time = 0.0
         self.animated_indices = []
         self.cycle_duration = 6.0
         self.smooth = True
-        self.label_strings = [None] * len(self.axes)
+        self.dwell_path = None
         self.checks = []
-        self.labels = []
         self.available = [hi > lo for lo, hi in self.ranges]
         if not any(self.available):
             raise RuntimeError("This font has no Font Axes slider with a nonzero range.")
 
-        height = 261 + 32 * len(self.axes)
-        self.w = vanilla.FloatingWindow((390, height), "Font Axes Player",
-                                       autosaveName="kp.FontAxesPlayer.window")
-        self.w.fontName = vanilla.TextBox((16, 12, -16, 20), str(font.familyName))
-        self.w.hint = vanilla.TextBox((16, 36, -16, 18), "Animate these axes:", sizeStyle="small")
+        axis_rows = len(self.axes)
+        controls_y = 36 + 24*axis_rows
+        height = controls_y + 120
+        self.w = vanilla.FloatingWindow((280, height), "Variable Axis Player",
+                                       autosaveName="kp.VariableAxisPlayer.narrow")
+        self.w.fontName = vanilla.TextBox((12, 9, -12, 17), str(font.familyName), sizeStyle="small")
         first = self.available.index(True)
-        for i, ((_, name), (low, high), value) in enumerate(zip(self.axes, self.ranges, self.original_values)):
-            y = 61 + 32 * i
-            check = vanilla.CheckBox((16, y, 215, 22), name, value=i == first,
-                                     callback=self.selection_changed)
+        for i, (_, name) in enumerate(self.axes):
+            low, high = self.ranges[i]
+            title = "%s (%g–%g)" % (name, low, high)
+            check = vanilla.CheckBox((12, 31 + 24*i, 148, 20),
+                                    name, value=i == first, sizeStyle="small",
+                                    callback=self.selection_changed)
             check.enable(self.available[i])
-            label = vanilla.TextBox((235, y + 2, -16, 18), self.label(i, value),
-                                   alignment="right", sizeStyle="small")
+            check.getNSButton().setToolTip_(title)
             setattr(self.w, "axis%d" % i, check)
-            setattr(self.w, "value%d" % i, label)
             self.checks.append(check)
-            self.labels.append(label)
-        y = 65 + 32 * len(self.axes)
-        self.w.divider = vanilla.HorizontalLine((16, y, -16, 1))
-        self.w.speedLabel = vanilla.TextBox((16, y + 14, 100, 18), "Speed", sizeStyle="small")
-        # Logarithmic: equal distances double/halve speed; the centre is 1×.
-        self.w.speed = vanilla.Slider((116, y + 10, 183, 24), minValue=-2.0, maxValue=2.0,
-                                     value=0.0, callback=self.speed_changed)
-        self.w.speedValue = vanilla.TextBox((305, y + 14, 68, 18), "1×", sizeStyle="small")
-        self.w.motionLabel = vanilla.TextBox((16, y + 48, 100, 18), "Motion", sizeStyle="small")
-        self.w.motion = vanilla.PopUpButton((116, y + 44, -16, 24),
-                                            ["Smooth turnarounds", "Constant speed"],
-                                            callback=self.motion_changed)
-        self.w.performanceLabel = vanilla.TextBox((16, y + 82, 100, 18), "Playback", sizeStyle="small")
-        self.w.performance = vanilla.PopUpButton((116, y + 78, -16, 24),
+            range_label = vanilla.TextBox((-112, 34 + 24*i, 100, 17),
+                                           "(%g–%g)" % (low, high),
+                                           alignment="right", sizeStyle="small")
+            setattr(self.w, "range%d" % i, range_label)
+        self.w.speedLabel = vanilla.TextBox((12, controls_y+3, 64, 17), "Speed", sizeStyle="small")
+        self.w.speed = vanilla.Slider((86, controls_y, 132, 21), minValue=-2.0, maxValue=2.0,
+                                     value=0.0, callback=self.speed_changed, sizeStyle="small")
+        self.w.speedValue = vanilla.TextBox((224, controls_y+3, 44, 17), "1×",
+                                            alignment="right", sizeStyle="small")
+        self.w.motionLabel = vanilla.TextBox((12, controls_y+29, 64, 17), "Motion", sizeStyle="small")
+        self.w.motion = vanilla.PopUpButton((86, controls_y+25, -12, 22),
+                                            ["Smooth", "Pause at extremes", "Pause at instances"],
+                                            callback=self.motion_changed, sizeStyle="small")
+        self.w.performanceLabel = vanilla.TextBox((12, controls_y+55, 64, 17), "Playback", sizeStyle="small")
+        self.w.performance = vanilla.PopUpButton((86, controls_y+51, -12, 22),
                                                  ["Smooth · 30 fps", "Balanced · 20 fps", "Light · 12 fps"],
-                                                 callback=self.performance_changed)
-        self.w.status = vanilla.TextBox((16, y + 116, -16, 34), "6.0 seconds out and back. Move Speed right for faster.",
-                                       sizeStyle="small")
-        self.w.restore = vanilla.Button((16, -40, 120, 24), "Restore", callback=self.restore)
-        self.w.play = vanilla.Button((-126, -40, 110, 24), "Play", callback=self.toggle)
+                                                 callback=self.performance_changed, sizeStyle="small")
+        self.w.restore = vanilla.Button((12, -34, 92, 22), "Restore", callback=self.restore, sizeStyle="small")
+        self.w.play = vanilla.Button((-104, -34, 92, 22), "Play", callback=self.toggle, sizeStyle="small")
+        self.w.motion.getNSPopUpButton().setToolTip_("Pause modes hold for one second. Instances follow active static exports matching unchecked axes.")
+        self.w.speed.getNSSlider().setToolTip_("Move right for faster playback, left for slower.")
+        self.w.restore.getNSButton().setToolTip_("Stop and restore the preview captured when this panel opened.")
         self.w.bind("close", self.window_closed)
         self.w.open()
         self.w.makeKey()
-
-    def label(self, i, value):
-        low, high = self.ranges[i]
-        return "%g  (%g–%g)" % (value, low, high)
 
     def valid_context(self, full=True):
         if full and not any(f == self.font for f in Glyphs.fonts):
@@ -206,20 +286,32 @@ class FontAxesPlayer:
             self.sync_phases()
             self.animated_indices = [i for i, c in enumerate(self.checks) if c.get() and self.available[i]]
             self.cycle_duration = self.cycle_seconds()
-            self.smooth = self.w.motion.get() == 0
+            mode = self.w.motion.get()
+            self.smooth = mode == 0
+            self.dwell_path = None
+            if mode >= 1:
+                moving = self.animated_indices
+                fixed = [float(slider.doubleValue()) for slider in self.sliders]
+                ranges = [self.ranges[i] for i in moving]
+                if mode == 1:
+                    stops = [tuple(low for low, high in ranges), tuple(high for low, high in ranges)]
+                else:
+                    stops = instance_stops(self.font, moving, self.ranges, fixed)
+                self.dwell_path = DwellPath(stops, [fixed[i] for i in moving], ranges,
+                                           self.phases[moving[0]] > 0.5)
             self.arm_timer()
             self.w.play.setTitle("Pause")
-            self.playing_status()
         except Exception as error:
             self.pause(str(error))
+            Message("Variable Axis Player", str(error))
 
-    def pause(self, message="Paused. Play resumes from this position."):
+    def pause(self, message="Play resumes from this position."):
         if self.timer is not None:
             self.timer.invalidate()
             self.timer = None
         if not self.closed:
             self.w.play.setTitle("Play")
-            self.w.status.set(message)
+            self.w.play.getNSButton().setToolTip_(message)
 
     def toggle(self, sender=None):
         if self.timer is None:
@@ -236,10 +328,6 @@ class FontAxesPlayer:
         # frames: UI interaction gets priority over the animation.
         self.timer.setTolerance_(0.002)
         NSRunLoop.mainRunLoop().addTimer_forMode_(self.timer, NSDefaultRunLoopMode)
-
-    def playing_status(self):
-        self.w.status.set("Playing · %.1f s out and back · %g fps" %
-                          (self.cycle_duration, FRAME_RATES[self.w.performance.get()]))
 
     def tick(self, timer):
         try:
@@ -266,43 +354,35 @@ class FontAxesPlayer:
             advance = elapsed / self.cycle_duration
             # Compute from elapsed time, so dropping a late frame never creates
             # a backlog or changes the selected playback speed.
-            for i in self.animated_indices:
+            stop_values = self.dwell_path.advance(elapsed, self.cycle_duration) if self.dwell_path else None
+            for position, i in enumerate(self.animated_indices):
                 slider = self.sliders[i]
                 # Test animated control ownership before every native action.
                 if slider.window() is None:
                     self.acquire_sliders()
                     slider = self.sliders[i]
                 low, high = self.ranges[i]
-                self.phases[i] = (self.phases[i] + advance) % 1.0
-                value = low + (high - low) * wave(self.phases[i], self.smooth)
+                if stop_values is None:
+                    self.phases[i] = (self.phases[i] + advance) % 1.0
+                    value = low + (high - low) * wave(self.phases[i], self.smooth)
+                else:
+                    value = stop_values[position]
                 # Smaller than 1/4 of one slider point: indistinguishable thumb
                 # motion need not trigger another expensive native interpolation.
                 span = max(1.0, float(slider.bounds().size.width))
                 threshold = (high - low) * 0.25 / span
-                if abs(value - float(slider.doubleValue())) >= threshold:
+                difference = abs(value - float(slider.doubleValue()))
+                exact_stop = self.dwell_path is not None and self.dwell_path.arrived
+                if difference > 1e-10 and (exact_stop or difference >= threshold):
                     move_slider(slider, value)
-            if now - self.last_label_time >= LABEL_INTERVAL:
-                self.update_labels()
-                self.last_label_time = now
         except Exception as error:
             self.pause(str(error))
-            print("Font Axes Player:", error)
+            print("Variable Axis Player:", error)
             traceback.print_exc()
-
-    def update_labels(self):
-        for i, slider in enumerate(self.sliders):
-            text = self.label(i, float(slider.doubleValue()))
-            if text != self.label_strings[i]:
-                self.labels[i].set(text)
-                self.label_strings[i] = text
 
     def performance_changed(self, sender):
         if self.timer is not None:
             self.arm_timer()
-            self.playing_status()
-        else:
-            self.w.status.set("%g fps selected. Speed controls the cycle time." %
-                              FRAME_RATES[sender.get()])
 
     def selection_changed(self, sender):
         if self.timer is not None:
@@ -314,11 +394,6 @@ class FontAxesPlayer:
     def speed_changed(self, sender):
         self.w.speedValue.set("%.2g×" % (2.0 ** sender.get()))
         self.cycle_duration = self.cycle_seconds()
-        if self.timer is not None:
-            self.playing_status()
-            return
-        prefix = "Playing · " if self.timer is not None else "Speed set · "
-        self.w.status.set(prefix + "%.1f seconds out and back" % self.cycle_seconds())
 
     def motion_changed(self, sender):
         if self.timer is not None:
@@ -335,11 +410,10 @@ class FontAxesPlayer:
                 move_slider(slider, value)
             self.tab.graphicView().showInterpolationAtLocation_(self.original_location)
             self.tab.graphicView().reflow()
-            self.update_labels()
             self.phases = [0.0] * len(self.axes)
-            self.w.status.set("Restored the preview from when this panel opened.")
+            self.dwell_path = None
         except Exception as error:
-            self.w.status.set(str(error))
+            Message("Variable Axis Player", str(error))
             traceback.print_exc()
 
     def window_closed(self, sender):
@@ -361,24 +435,24 @@ class FontAxesPlayer:
 
 def main():
     if float(Glyphs.versionNumber) < 4.0:
-        Message("Font Axes Player", "This tool requires Glyphs 4's native Font Axes sidebar.")
+        Message("Variable Axis Player", "This tool requires Glyphs 4's native Font Axes sidebar.")
         return
     previous = getattr(builtins, SINGLETON, None)
     if previous is not None:
         previous.close()
     font = Glyphs.font
     if font is None or font.currentTab is None:
-        Message("Font Axes Player", "Open a font and an Edit tab, then show Axes in the left sidebar.")
+        Message("Variable Axis Player", "Open a font and an Edit tab, then show Axes in the left sidebar.")
         return
     if not font.axes:
-        Message("Font Axes Player", "This font has no font axes.")
+        Message("Variable Axis Player", "This font has no font axes.")
         return
     try:
         player = FontAxesPlayer(font, font.currentTab)
         setattr(builtins, SINGLETON, player)
     except Exception as error:
         traceback.print_exc()
-        Message("Font Axes Player", str(error))
+        Message("Variable Axis Player", str(error))
 
 
 if __name__ == "__main__":
