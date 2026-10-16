@@ -32,7 +32,6 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 - [Show](#show)
 - [Spacing & Kerning](#spacing--kerning)
 - [Variable Fonts](#variable-fonts)
-- [Experimental tools](#experimental-tools)
 
 <br>
 
@@ -173,7 +172,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 </thead>
 <tbody>
 <tr>
-<td valign="top" nowrap><a href="./Copy%20Paste/Copy%20Word%20as%20Vectors.py">Copy Selection as Vectors</a></td>
+<td valign="top" nowrap><a href="./Copy%20Paste/Copy%20Selection%20as%20Vectors.py">Copy Selection as Vectors</a></td>
 <td valign="top">Copies displayed text as editable Illustrator/InDesign vectors, preserving placement. Text-tool selection defines the copy; otherwise copies the whole tab.</td>
 <td valign="top">Clipboard only; leaves the font unchanged.</td>
 </tr>
@@ -322,7 +321,7 @@ Many tools with a panel use **Vanilla**. Install the Python 3 runtime and Vanill
 </thead>
 <tbody>
 <tr>
-<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Apply%3ARemove%20Kern%20Pairs%20Globally.py">Apply and Remove Kern Pairs<br>Globally</a></td>
+<td valign="top" nowrap><a href="./Spacing%20%26%20Kerning/Apply%20and%20Remove%20Kern%20Pairs%20Globally.py">Apply and Remove Kern Pairs<br>Globally</a></td>
 <td valign="top">Copies the active master’s current pair value to all masters, or removes the pair from the current master or all masters.</td>
 <td valign="top">Current left-to-right pair; may affect kerning groups.</td>
 </tr>
